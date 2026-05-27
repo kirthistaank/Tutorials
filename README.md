@@ -52,40 +52,40 @@ To get the most out of these tutorials, you should have:
 
 | Chapter | Topic | Focus |
 |---------|-------|-------|
-| 1 | [What is Neuro-Symbolic AI?](./chapter-01-introduction.html) | Core concepts, motivation, and overview |
-| 2 | [Knowledge Graphs Basics](./chapter-02-kg-basics.html) | Introduction to KGs, structure, and fundamentals |
-| 3 | [Knowledge Graphs Advanced](./chapter-03-kg-advanced.html) | Complex KG operations and optimization |
-| 4 | [Building Neuro-Symbolic Projects](./chapter-04-building-projects.html) | Practical project architecture and best practices |
+| 1 | [What is Neuro-Symbolic AI?](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-01-introduction.html) | Core concepts, motivation, and overview |
+| 2 | [Knowledge Graphs Basics](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-02-kg-basics.html) | Introduction to KGs, structure, and fundamentals |
+| 3 | [Knowledge Graphs Advanced](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-03-kg-advanced.html) | Complex KG operations and optimization |
+| 4 | [Building Neuro-Symbolic Projects](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-04-building-projects.html) | Practical project architecture and best practices |
 
 ### **Part 2: Real-World Applications (Chapters 5-8)**
 
 | Chapter | Domain | Application |
 |---------|--------|-------------|
-| 5 | [Healthcare](./chapter-05-healthcare.html) | Diagnosis systems, patient records, clinical insights |
-| 6 | [Legal & Compliance](./chapter-06-legal.html) | Contract analysis, compliance checking, legal reasoning |
-| 7 | [Insurance](./chapter-07-insurance.html) | Claims processing, risk assessment, fraud detection |
-| 8 | [Pharmacy](./chapter-08-pharmacy.html) | Drug interactions, dosage optimization, patient safety |
+| 5 | [Healthcare](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-05-healthcare.html) | Diagnosis systems, patient records, clinical insights |
+| 6 | [Legal & Compliance](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-06-legal.html) | Contract analysis, compliance checking, legal reasoning |
+| 7 | [Insurance](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-07-insurance.html) | Claims processing, risk assessment, fraud detection |
+| 8 | [Pharmacy](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-08-pharmacy.html) | Drug interactions, dosage optimization, patient safety |
 
 ### **Part 3: Advanced Reasoning (Chapters 9-14)**
 
 | Chapter | Topic | Concepts |
 |---------|-------|----------|
-| 9 | [Trustworthiness & Explainability](./chapter-09-trustworthiness.html) | Interpretability, transparency, ethical AI |
-| 10 | [Production Systems](./chapter-10-production-systems.html) | Scalability, monitoring, deployment strategies |
-| 11 | [Reasoning Types](./chapter-11-reasoning-types.html) | Deductive, inductive, abductive reasoning |
-| 12 | [Datalog & Logic Programming](./chapter-12-datalog.html) | Datalog syntax, queries, and rule-based systems |
-| 13 | [Graph Embeddings](./chapter-13-graph-embeddings.html) | Representation learning, embedding techniques |
-| 14 | [Lifting & Lowering](./chapter-14-lifting-lowering.html) | Grounding symbolic representations in neural space |
+| 9 | [Trustworthiness & Explainability](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-09-trustworthiness.html) | Interpretability, transparency, ethical AI |
+| 10 | [Production Systems](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-10-production-systems.html) | Scalability, monitoring, deployment strategies |
+| 11 | [Reasoning Types](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-11-reasoning-types.html) | Deductive, inductive, abductive reasoning |
+| 12 | [Datalog & Logic Programming](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-12-datalog.html) | Datalog syntax, queries, and rule-based systems |
+| 13 | [Graph Embeddings](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-13-graph-embeddings.html) | Representation learning, embedding techniques |
+| 14 | [Lifting & Lowering](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-14-lifting-lowering.html) | Grounding symbolic representations in neural space |
 
 ### **Part 4: Modern Techniques (Chapters 15-19)**
 
 | Chapter | Technique | Use Cases |
 |---------|-----------|-----------|
-| 15 | [Chain-of-Thought Reasoning](./chapter-15-chain-of-thought.html) | Step-by-step problem decomposition and solving |
-| 16 | [Chain-of-Verification](./chapter-16-chain-of-verification.html) | Self-verification and fact-checking strategies |
-| 17 | [Logic Language Models](./chapter-17-logic-lm.html) | LLMs with logical constraints and reasoning |
-| 18 | [Graph of Logic](./chapter-18-graph-of-logic.html) | Integration of graphs and logical reasoning |
-| 19 | [Clinical AI Applications](./chapter-19-clinical-ai.html) | Advanced healthcare AI systems |
+| 15 | [Chain-of-Thought Reasoning](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-15-chain-of-thought.html) | Step-by-step problem decomposition and solving |
+| 16 | [Chain-of-Verification](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-16-chain-of-verification.html) | Self-verification and fact-checking strategies |
+| 17 | [Logic Language Models](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-17-logic-lm.html) | LLMs with logical constraints and reasoning |
+| 18 | [Graph of Logic](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-18-graph-of-logic.html) | Integration of graphs and logical reasoning |
+| 19 | [Clinical AI Applications](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-19-clinical-ai.html) | Advanced healthcare AI systems |
 
 ### **Knowledge Checks**
 
@@ -177,16 +177,14 @@ This tutorial material is provided as educational content. Please respect intell
 ```
 Shanbhag, K. (2026). Neuro-Symbolic AI Tutorial Series. 
 Inspired by UC Berkeley DATASCI 290, MIDS Program.
-
+Available at: https://kirthistaank.github.io/Tutorials/
 ```
-
-Available at: [git](https://github.com/kirthistaank/Tutorials)
 
 ---
 
 ## 🗺️ Getting Started
 
-**Ready to dive in?** Start here: [Chapter 1: What is Neuro-Symbolic AI?](./chapter-01-introduction.html)
+**Ready to dive in?** Start here: [Chapter 1: What is Neuro-Symbolic AI?](https://kirthistaank.github.io/Tutorials/Tutorial/chapter-01-introduction.html)
 
 **Questions before starting?** Check the FAQ below or [reach out](mailto:kirthi.genai@gmail.com)!
 
