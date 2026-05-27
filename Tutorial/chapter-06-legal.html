@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal AI Applications - Neuro-Symbolic AI Tutorial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        header {
+            background: white;
+            color: #333;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 3px solid #1976d2;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        header p {
+            font-size: 1.1em;
+            color: #999;
+        }
+
+        .chapter-number {
+            display: inline-block;
+            background: white;
+            color: #1976d2;
+            padding: 5px 15px;
+            border-radius: 0;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            border: 1px solid #1976d2;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #333;
+            margin: 30px 0 15px 0;
+            font-size: 1.8em;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #555;
+            margin: 25px 0 12px 0;
+            font-size: 1.3em;
+        }
+
+        p {
+            margin: 15px 0;
+            font-size: 1.05em;
+            line-height: 1.8;
+        }
+
+        .concept-box {
+            background: white;
+            border-left: 4px solid #1976d2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+
+        .concept-box strong {
+            color: #1976d2;
+        }
+
+        .example-box {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+
+        .example-box h4 {
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+
+        .use-case-box {
+            background: white;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+
+        .use-case-box strong {
+            color: #ff9800;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            color: #333;
+            padding: 15px;
+            border-radius: 0;
+            border-left: 4px solid #1976d2;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        svg {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            display: block;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th {
+            background: white;
+            color: #1976d2;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #1976d2;
+        }
+
+        .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .key-points {
+            background: white;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+
+        .key-points h4 {
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+
+        .key-points ul {
+            list-style-position: inside;
+            margin-left: 10px;
+        }
+
+        .key-points li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .nav-button {
+            display: inline-block;
+            background: white;
+            color: #1976d2;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 0;
+            border: 2px solid #1976d2;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-button:hover {
+            background: #1976d2;
+            color: white;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+        }
+
+        footer {
+            background: white;
+            padding: 20px 40px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="chapter-number">CHAPTER 6</div>
+            <h1>⚖️ Legal AI Applications</h1>
+            <p>Contract Analysis, Case Law Reasoning, and Compliance Automation</p>
+        </header>
+
+        <div class="content">
+            <h2>Legal: A Knowledge-Intensive Domain Perfect for Neuro-Symbolic AI</h2>
+            <p>
+                Legal work is fundamentally about reasoning over rules, precedents, and evidence. Neuro-symbolic AI excels here because:
+            </p>
+            <ul>
+                <li>Legal documents are complex and unstructured (neural networks extract meaning)</li>
+                <li>Legal logic is explicitly codified in statutes and case law (symbolic reasoning applies precedent)</li>
+                <li>Humans must be able to understand the reasoning (explainability is essential)</li>
+            </ul>
+
+            <div class="concept-box">
+                <strong>The Challenge:</strong> Lawyers spend hours reviewing contracts, researching case law, and checking compliance. AI can help, but legal decisions must be verifiable and defensible.
+            </div>
+
+            <div class="concept-box">
+                <strong>The Opportunity:</strong> Neuro-symbolic AI can automate routine tasks while preserving explainability—the lawyer stays in control and understands every recommendation.
+            </div>
+
+            <h2>Key Legal AI Applications</h2>
+
+            <h3>1. Contract Analysis & Review</h3>
+            <p>
+                Automatically extract key terms, flag risks, and compare against templates.
+            </p>
+
+            <div class="use-case-box">
+                <strong>Use Case: NDA Review System</strong>
+                <p><strong>Neural Component:</strong> Extract key clauses from contract text using NLP (confidentiality obligations, duration, exceptions)</p>
+                <p><strong>Symbolic Component:</strong> KG of standard terms + rules for risk assessment ("mutual" NDA is safer than "one-way")</p>
+                <p><strong>Result:</strong> "Flag: One-way confidentiality favors vendor. Standard template uses mutual NDA. Recommendation: Revise clause 3.2."</p>
+            </div>
+
+            <h3>2. Due Diligence Automation</h3>
+            <p>
+                In M&A (mergers & acquisitions), due diligence means reviewing thousands of documents. Neuro-symbolic AI accelerates this.
+            </p>
+
+            <div class="use-case-box">
+                <strong>Use Case: M&A Document Analyzer</strong>
+                <p><strong>Neural Component:</strong> Extract contracts, agreements, litigation history from document corpus</p>
+                <p><strong>Symbolic Component:</strong> Risk rules (ongoing litigation + material contract = red flag), financial rules (debt limits)</p>
+                <p><strong>Result:</strong> "18 contracts reviewed. 3 material risks found. Estimated exposure: $2.5M. Recommend legal review before closing."</p>
+            </div>
+
+            <h3>3. Legal Research & Case Prediction</h3>
+            <p>
+                Predict case outcomes and find relevant precedents.
+            </p>
+
+            <div class="use-case-box">
+                <strong>Use Case: Case Outcome Prediction</strong>
+                <p><strong>Neural Component:</strong> Embed case facts, jurisdiction, judge, legal claims using language models</p>
+                <p><strong>Symbolic Component:</strong> KG of precedents, statutes, legal doctrines; rules for similar cases</p>
+                <p><strong>Result:</strong> "Similar cases (95% match) won 72% of the time. Jurisdiction's courts favor plaintiffs in this category. Estimated: 70% win probability."</p>
+            </div>
+
+            <h3>4. Regulatory Compliance</h3>
+            <p>
+                Ensure documents comply with regulations (GDPR, HIPAA, etc.).
+            </p>
+
+            <div class="use-case-box">
+                <strong>Use Case: GDPR Compliance Checker</strong>
+                <p><strong>Neural Component:</strong> Extract data handling practices from privacy policies and contracts</p>
+                <p><strong>Symbolic Component:</strong> GDPR rules (data consent required, right to be forgotten, data minimization)</p>
+                <p><strong>Result:</strong> "⚠️ Missing: Data retention period not specified. GDPR requires explicit limit. Recommendation: Add clause limiting storage to X years."</p>
+            </div>
+
+            <h3>5. Legal Document Generation</h3>
+            <p>
+                Auto-generate contracts customized to specific situations.
+            </p>
+
+            <div class="use-case-box">
+                <strong>Use Case: Employment Agreement Generator</strong>
+                <p><strong>Neural Component:</strong> Understand job title, compensation, location, special terms</p>
+                <p><strong>Symbolic Component:</strong> Templates + rules for jurisdiction-specific requirements</p>
+                <p><strong>Result:</strong> "Generated agreement for: Software Engineer, California. Includes: Non-compete (limited by CA law), arbitration clause, at-will employment. Ready for review."</p>
+            </div>
+
+            <h2>Architecture: Legal Neuro-Symbolic System</h2>
+
+            <div class="example-box">
+                <h4>Contract Analysis Pipeline</h4>
+                <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowL" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#667eea" />
+                        </marker>
+                    </defs>
+
+                    <!-- Input -->
+                    <rect x="50" y="50" width="150" height="60" fill="#667eea" rx="3" opacity="0.8"/>
+                    <text x="125" y="85" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Raw Contract (PDF/Text)</text>
+
+                    <!-- Arrow -->
+                    <line x1="200" y1="80" x2="250" y2="80" stroke="#667eea" stroke-width="2" marker-end="url(#arrowL)"/>
+
+                    <!-- Extraction -->
+                    <rect x="250" y="50" width="150" height="60" fill="#764ba2" rx="3" opacity="0.8"/>
+                    <text x="325" y="75" text-anchor="middle" fill="white" font-weight="bold" font-size="11">Neural Extraction</text>
+                    <text x="325" y="90" text-anchor="middle" fill="white" font-size="10">(Extract clauses)</text>
+
+                    <!-- Arrow -->
+                    <line x1="400" y1="80" x2="450" y2="80" stroke="#667eea" stroke-width="2" marker-end="url(#arrowL)"/>
+
+                    <!-- Structured Output -->
+                    <rect x="450" y="50" width="150" height="60" fill="#fff3cd" rx="3"/>
+                    <text x="525" y="75" text-anchor="middle" font-weight="bold" font-size="11">Structured Clauses</text>
+                    <text x="525" y="90" text-anchor="middle" font-size="9">confidentiality, payment,</text>
+
+                    <!-- Arrow down -->
+                    <line x1="125" y1="110" x2="125" y2="150" stroke="#667eea" stroke-width="2" marker-end="url(#arrowL)"/>
+
+                    <!-- KG + Rules -->
+                    <rect x="50" y="150" width="300" height="80" fill="#667eea" rx="3" opacity="0.8"/>
+                    <text x="200" y="175" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Knowledge Graph + Rules</text>
+                    <text x="200" y="195" text-anchor="middle" fill="white" font-size="10">Entities: clauses, legal concepts, parties</text>
+                    <text x="200" y="210" text-anchor="middle" fill="white" font-size="10">Rules: risk assessment, compliance checks</text>
+
+                    <!-- Arrow -->
+                    <line x1="350" y1="190" x2="410" y2="190" stroke="#667eea" stroke-width="2" marker-end="url(#arrowL)"/>
+
+                    <!-- Analysis -->
+                    <rect x="410" y="150" width="190" height="80" fill="#e8f4f8" rx="3"/>
+                    <text x="505" y="175" text-anchor="middle" fill="#333" font-weight="bold" font-size="11">Risk Analysis</text>
+                    <text x="505" y="195" text-anchor="middle" fill="#333" font-size="9">Favorable/Unfavorable terms</text>
+                    <text x="505" y="210" text-anchor="middle" fill="#333" font-size="9">Missing clauses, red flags</text>
+
+                    <!-- Arrow down -->
+                    <line x1="200" y1="230" x2="200" y2="270" stroke="#667eea" stroke-width="2" marker-end="url(#arrowL)"/>
+
+                    <!-- Output -->
+                    <rect x="50" y="270" width="550" height="100" fill="#d4edda" rx="3"/>
+                    <text x="325" y="295" text-anchor="middle" fill="#155724" font-weight="bold" font-size="12">Report & Recommendations</text>
+                    <text x="325" y="315" text-anchor="middle" fill="#333" font-size="10">Summary of key terms | Risk assessment | Missing clauses | Recommended changes</text>
+                    <text x="325" y="335" text-anchor="middle" fill="#333" font-size="10">Comparison to standard template | Precedent citations | Legal references</text>
+                </svg>
+            </div>
+
+            <h2>Real-World Example: Contract Risk Assessment</h2>
+
+            <div class="code-block"><pre># Legal Contract Analyzer - Neuro-Symbolic
+
+from transformers import pipeline
+import networkx as nx
+
+class ContractAnalyzer:
+    def __init__(self):
+        self.nlp = pipeline("zero-shot-classification")
+        self.legal_kg = self._build_legal_kg()
+
+    def _build_legal_kg(self):
+        """Build KG of legal concepts and risks"""
+        g = nx.DiGraph()
+
+        # Favorable terms for buyer
+        favorable = ['limitation_of_liability', 'cap_damages', 'warranty_disclaimer']
+        # Unfavorable terms for buyer
+        unfavorable = ['indemnification', 'liquidated_damages', 'unlimited_liability']
+
+        for term in favorable:
+            g.add_node(term, favorability='high')
+        for term in unfavorable:
+            g.add_node(term, favorability='low')
+
+        return g
+
+    def analyze_contract(self, contract_text, buyer_perspective=True):
+        """
+        Analyze contract for risks
+        """
+        # Step 1: Extract key terms using NLP
+        key_clauses = self.nlp(
+            contract_text,
+            candidate_labels=[
+                'limitation of liability',
+                'indemnification',
+                'warranty',
+                'payment terms',
+                'termination',
+                'confidentiality'
+            ],
+            hypothesis_template="This document contains: {}",
+            multi_class=True
+        )
+
+        # Step 2: Score each clause
+        risk_score = 0
+        findings = []
+
+        for label, score in zip(key_clauses['labels'], key_clauses['scores']):
+            if score > 0.7:  # Confident detection
+                node_data = self.legal_kg.nodes.get(label, {})
+                favorability = node_data.get('favorability', 'neutral')
+
+                if favorability == 'low' and buyer_perspective:
+                    risk_score += 1
+                    findings.append({
+                        'clause': label,
+                        'risk': 'HIGH',
+                        'reason': f'{label} is unfavorable to buyer'
+                    })
+                elif favorability == 'high':
+                    findings.append({
+                        'clause': label,
+                        'risk': 'GOOD',
+                        'reason': f'{label} protects buyer'
+                    })
+
+        # Step 3: Generate report
+        report = {
+            'overall_risk': 'HIGH' if risk_score > 2 else 'MEDIUM' if risk_score > 0 else 'LOW',
+            'findings': findings,
+            'recommendations': self._generate_recommendations(findings)
+        }
+
+        return report
+
+    def _generate_recommendations(self, findings):
+        """Generate lawyer recommendations"""
+        recommendations = []
+
+        high_risk = [f for f in findings if f.get('risk') == 'HIGH']
+        if high_risk:
+            recommendations.append(
+                f"Address {len(high_risk)} high-risk clauses before signing"
+            )
+
+        return recommendations</pre></div>
+
+            <h2>Legal Knowledge Representation</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Concept</th>
+                        <th>Entity in KG</th>
+                        <th>Relationships</th>
+                        <th>Example Rule</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Parties</strong></td>
+                        <td>Company, Individual</td>
+                        <td>Obligated_To, Receives_Benefit</td>
+                        <td>If party signs, party is obligated</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clauses</strong></td>
+                        <td>Limitation, Warranty, Termination</td>
+                        <td>Limits_Liability, Grants_Right</td>
+                        <td>Limitation caps damages at X amount</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jurisdictions</strong></td>
+                        <td>State/Country, Court System</td>
+                        <td>Governed_By, Enforceable_In</td>
+                        <td>California: non-competes are void</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Precedents</strong></td>
+                        <td>Case, Statute, Regulation</td>
+                        <td>Cited_By, Overruled_By, Interprets</td>
+                        <td>Case supports clause interpretation</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Regulatory Considerations in Legal AI</h2>
+
+            <div class="concept-box">
+                <strong>Bar Association Rules:</strong> AI in legal practice is subject to bar association ethics rules. Most states require:
+                <ul>
+                    <li>Lawyer competence and review of AI recommendations</li>
+                    <li>Confidentiality (AI systems can't disclose client data)</li>
+                    <li>Honesty (can't misrepresent AI capabilities to clients)</li>
+                    <li>Competence in the technology being used</li>
+                </ul>
+            </div>
+
+            <h2>Advantages of Neuro-Symbolic Legal AI</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Purely Neural</th>
+                        <th>Neuro-Symbolic</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Explainability</strong></td>
+                        <td>Black box; hard to defend to client</td>
+                        <td>Transparent; can cite legal reasoning</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consistency</strong></td>
+                        <td>May give different answers for same question</td>
+                        <td>Rules ensure consistent application</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Adherence to Law</strong></td>
+                        <td>May violate rules (no hard constraints)</td>
+                        <td>Hard constraints enforce legal requirements</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Updating Law</strong></td>
+                        <td>Must retrain on new cases</td>
+                        <td>Update rules in knowledge base</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Liability</strong></td>
+                        <td>Harder to defend in court</td>
+                        <td>Reasoning can be audited; easier to defend</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Future Directions in Legal Tech</h2>
+
+            <div class="key-points">
+                <h4>🔮 Emerging Legal AI Applications:</h4>
+                <ul>
+                    <li><strong>Predictive Analytics:</strong> Predict settlement values, trial outcomes, client risks</li>
+                    <li><strong>Legal Research Automation:</strong> Automatically find relevant cases, statutes, regulations</li>
+                    <li><strong>Contract Intelligence:</strong> Track contract performance, flag renewal dates, monitor obligations</li>
+                    <li><strong>Deposition Analysis:</strong> Real-time analysis during depositions for strategic questioning</li>
+                    <li><strong>Matter Management:</strong> Automated workflow for case management, deadline tracking, document assembly</li>
+                </ul>
+            </div>
+
+            <div class="key-points">
+                <h4>✓ Key Takeaways - Legal AI:</h4>
+                <ul>
+                    <li>Legal work is knowledge-intensive and rule-based (perfect for neuro-symbolic)</li>
+                    <li>Neural networks extract information from complex legal documents</li>
+                    <li>Symbolic rules encode legal knowledge, precedent, and compliance requirements</li>
+                    <li>Explainability is essential (lawyers and judges must understand the reasoning)</li>
+                    <li>Bar association ethics rules apply (competence, confidentiality, honesty)</li>
+                    <li>Lawyer remains responsible; AI is a tool, not a replacement</li>
+                    <li>Precedent + rules can be represented in knowledge graphs for reasoning</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p>📚 Neuro-Symbolic AI Tutorial | Chapter 6: Legal AI Applications</p>
+            <p>This course was developed using Claude Code. Content is inspired by the Neuro-Symbolic AI course (DATASCI 290) from UC Berkeley's Master of Information and Data Science (MIDS) program, Spring 2026. For questions or feedback, <a href="mailto:kirthi.genai@gmail.com">Email</a> us.</p>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <a href="chapter-05-healthcare.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">← Healthcare</a>
+                <a href="../index.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 16px; display: inline-block; border-radius: 4px; transition: all 0.3s ease;">🏠 Home</a>
+                <a href="chapter-07-insurance.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">Insurance →</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

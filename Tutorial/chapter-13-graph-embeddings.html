@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 13: Graph Embeddings - Neuro-Symbolic AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #555; background: #ffffff; min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; }
+        header { background: white; color: #333; padding: 40px; border-bottom: 3px solid #1976d2; text-align: center; }
+        .chapter-number { display: inline-block; background: white; color: #1976d2; padding: 5px 12px; border-radius: 0; font-size: 0.85em; margin-bottom: 10px; font-weight: bold; border: 1px solid #1976d2; }
+        header h1 { font-size: 2.5em; margin: 15px 0 10px 0; color: #333; }
+        header p { font-size: 1.1em; color: #999; margin: 10px 0; }
+        .content { padding: 40px; }
+        h2 { color: #333; font-size: 1.8em; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin: 30px 0 15px 0; }
+        h3 { color: #555; font-size: 1.3em; margin: 25px 0 15px 0; }
+        h4 { color: #1976d2; font-size: 1.1em; margin: 20px 0 10px 0; }
+        p { font-size: 1.05em; line-height: 1.8; margin: 15px 0; }
+        .highlight-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .highlight-box strong { color: #1976d2; }
+        .concept-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .concept-box strong { color: #1976d2; }
+        .key-points { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .key-points h4 { color: #ff9800; }
+        .key-points ul { margin-left: 20px; }
+        .key-points li { margin: 10px 0; }
+        .example-box { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .example-box h4 { color: #ff9800; }
+        .code-block { border-left: 4px solid #1976d2; background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; font-family: 'Courier New', monospace; font-size: 0.95em; overflow-x: auto; }
+        .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+        .navigation { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0e0e0; }
+        .nav-button { background: white; color: #1976d2; padding: 10px 20px; text-decoration: none; border: 2px solid #1976d2; border-radius: 0; transition: all 0.3s ease; font-weight: 500; cursor: pointer; }
+        .nav-button:hover { background: #1976d2; color: white; }
+        footer { background: white; padding: 30px; text-align: center; color: #999; border-top: 1px solid #e0e0e0; font-size: 0.9em; }
+        @media (max-width: 768px) { header h1 { font-size: 1.8em; } .content { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="chapter-number">CHAPTER 13</div>
+            <h1>⚡ Graph Embeddings & Vector Representations</h1>
+            <p>Bridging Structured Knowledge and Neural Space</p>
+        </header>
+
+        <div class="content">
+            <div class="highlight-box">
+                <strong>Learning Objectives:</strong><br>
+                Understand graph embeddings, learn Node2Vec and TransE algorithms, explore how to preserve network structure in vector space, and apply embeddings to similarity matching and link prediction.
+            </div>
+
+            <h2>What Are Graph Embeddings?</h2>
+
+            <p>
+                Graph embeddings are learned vector representations of graph objects (nodes, edges, subgraphs). The goal: map "who is related to whom" (graph structure) into distances and directions in vector space, so that structure is preserved numerically.
+            </p>
+
+            <div class="concept-box">
+                <strong>Core Insight:</strong><br>
+                Convert: "Drug A is similar to Drug B in the knowledge graph"<br>
+                Into: Vector(Drug A) is close to Vector(Drug B) in R^d space<br>
+                <br>
+                Then: Use fast vector operations (cosine similarity, nearest neighbor) instead of graph traversal
+            </div>
+
+            <h2>Why Embeddings Matter for Neuro-Symbolic AI</h2>
+
+            <p>
+                Knowledge graphs are powerful but slow: multi-hop queries require traversal. Embeddings trade structure for speed:
+            </p>
+
+            <ul style="margin-left: 20px; margin: 15px 0;">
+                <li><strong>Fast similarity matching:</strong> Compare vectors instead of graph traversal</li>
+                <li><strong>Neural integration:</strong> Pass embeddings to neural networks for pattern learning</li>
+                <li><strong>Link prediction:</strong> Predict unknown edges by vector geometry</li>
+                <li><strong>Representation learning:</strong> Capture semantic meaning in numbers</li>
+            </ul>
+
+            <h2>Node2Vec: Random Walk Based Embeddings</h2>
+
+            <div class="example-box">
+                <h4>How Node2Vec Works</h4>
+
+                <p><strong>Idea:</strong> Embed nodes so that nodes visited together in random walks are close in vector space.</p>
+
+                <ol style="margin-left: 20px;">
+                    <li><strong>Random Walk:</strong> Start at node, randomly traverse edges (like drunk person walking)</li>
+                    <li><strong>Collect Walks:</strong> Perform many random walks from each node</li>
+                    <li><strong>Learn Embeddings:</strong> Use skip-gram model (like Word2Vec) to learn vectors</li>
+                    <li><strong>Result:</strong> Nodes "similar" in structure are close in vector space</li>
+                </ol>
+
+                <p><strong>Example in Drug Discovery:</strong></p>
+                <div class="code-block"><pre>
+# Drug knowledge graph edges:
+drug_A -- similar_to -- drug_B
+drug_A -- treats -- disease_X
+drug_B -- treats -- disease_X
+disease_X -- causes -- symptom_Y
+
+# Random walk starting at drug_A:
+drug_A → drug_B → disease_X → symptom_Y → disease_X → drug_B → drug_A
+
+# Node2Vec learns:
+# - drug_A and drug_B vectors are close (visited together often)
+# - Both close to disease_X (related by same walks)
+# - All related to symptom_Y (multi-hop neighbor)
+
+# Use case: Find similar drugs
+embedding(drug_A) ≈ [0.2, 0.5, 0.8, ...]
+embedding(drug_B) ≈ [0.2, 0.5, 0.8, ...]
+similarity = cosine(embedding_A, embedding_B) ≈ 0.95 (very similar!)
+                </pre></div>
+            </div>
+
+            <div class="code-block"><pre>
+# Python: Node2Vec implementation
+from node2vec import Node2Vec
+import networkx as nx
+
+# Create graph
+G = nx.Graph()
+G.add_edges_from([
+    ('drug_A', 'drug_B'),
+    ('drug_A', 'disease_X'),
+    ('drug_B', 'disease_X'),
+    ('disease_X', 'symptom_Y')
+])
+
+# Learn embeddings
+node2vec = Node2Vec(G, dimensions=64, walks_per_node=10, walk_length=80)
+model = node2vec.fit(window=10, min_count=1)
+
+# Get embeddings
+drug_A_vec = model.wv['drug_A']  # 64-dimensional vector
+drug_B_vec = model.wv['drug_B']
+
+# Similarity
+similarity = model.wv.similarity('drug_A', 'drug_B')  # 0.0 to 1.0
+
+# Find similar drugs
+similar_to_A = model.wv.most_similar('drug_A', topn=5)
+            </pre></div>
+
+            <h2>TransE: Relation-Based Embeddings</h2>
+
+            <p>
+                TransE models knowledge graph triples (head, relation, tail) as vector equations: head + relation ≈ tail
+            </p>
+
+            <div class="example-box">
+                <h4>TransE for Medical Knowledge</h4>
+
+                <div class="code-block"><pre>
+# Knowledge graph facts:
+(drug_A, treats, disease_X)
+(disease_X, caused_by, bacteria_Y)
+(bacteria_Y, resistant_to, antibiotic_Z)
+
+# TransE learns embeddings where:
+embedding(drug_A) + embedding(treats) ≈ embedding(disease_X)
+embedding(disease_X) + embedding(caused_by) ≈ embedding(bacteria_Y)
+
+# This means:
+# If disease_X is caused by bacteria_Y
+# And drug_A treats disease_X
+# Then maybe drug_A is effective against bacteria_Y (link prediction!)
+
+# Scoring a triple:
+score(drug_A, treats, disease_X) = ||embedding(drug_A) + rel_treats - embedding(disease_X)||
+# Low score = true fact (vectors align)
+# High score = false fact (vectors misaligned)
+                </pre></div>
+            </div>
+
+            <h2>Medical Embeddings: ClinVec and Beyond</h2>
+
+            <p>
+                Domain-specific embeddings capture medical semantics:
+            </p>
+
+            <table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+                <tr style="border-bottom: 2px solid #1976d2;">
+                    <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">Embedding Type</th>
+                    <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">What It Captures</th>
+                    <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">Use Case</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>ClinVec</strong></td>
+                    <td style="padding: 15px;">Clinical concepts from EHR data</td>
+                    <td style="padding: 15px;">Disease similarity, treatment prediction</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Protein Embeddings</strong></td>
+                    <td style="padding: 15px;">Protein sequences, structures</td>
+                    <td style="padding: 15px;">Drug-target prediction, protein function</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Drug Embeddings</strong></td>
+                    <td style="padding: 15px;">Chemical structure, pharmacophore</td>
+                    <td style="padding: 15px;">Drug discovery, side effect prediction</td>
+                </tr>
+            </table>
+
+            <h2>Practical Application: Drug-Disease Linking</h2>
+
+            <div class="example-box">
+                <h4>End-to-End Example</h4>
+
+                <div class="code-block"><pre>
+# Step 1: Load drug and disease embeddings
+drug_embeddings = load_pretrained_embeddings('drug_vectors.bin')
+disease_embeddings = load_pretrained_embeddings('disease_vectors.bin')
+
+# Step 2: For each disease, find most similar drugs
+disease = 'hypertension'
+disease_vec = disease_embeddings[disease]
+
+# Fast vector search (instead of graph traversal!)
+similar_drugs = find_nearest_neighbors(disease_vec, drug_embeddings, k=10)
+
+# Step 3: Rank and validate
+for drug, similarity_score in similar_drugs:
+    # Only use if:
+    # 1. Similarity high enough (>0.7)
+    # 2. No contraindications in knowledge base
+    # 3. FDA approval or clinical evidence
+    if similarity_score > 0.7:
+        if not has_contraindication(drug, disease):
+            print(f"{drug} for {disease}: {similarity_score:.3f}")
+
+# Output:
+# lisinopril for hypertension: 0.892
+# enalapril for hypertension: 0.881
+# metoprolol for hypertension: 0.765
+                </pre></div>
+            </div>
+
+            <h2>Limitations and Considerations</h2>
+
+            <div class="concept-box">
+                <strong>When Embeddings Work Well:</strong><br>
+                ✓ Similarity matching<br>
+                ✓ Link prediction<br>
+                ✓ Clustering<br>
+                ✓ As neural network input
+            </div>
+
+            <div class="concept-box">
+                <strong>When Embeddings Fall Short:</strong><br>
+                ✗ Logical inference (relationships ≠ geometry)<br>
+                ✗ Hard constraints (vectors are soft)<br>
+                ✗ Interpretability (why are these drugs similar?)<br>
+                ✗ Out-of-distribution nodes (new drugs with no history)
+            </div>
+
+            <div class="key-points">
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li><strong>Graph embeddings</strong> map graph structure into vector space for fast computation</li>
+                    <li><strong>Node2Vec</strong> uses random walks to learn node similarity</li>
+                    <li><strong>TransE</strong> models relations as vector operations (head + rel ≈ tail)</li>
+                    <li><strong>Medical embeddings</strong> capture clinical similarity (ClinVec, protein vecs, drug vecs)</li>
+                    <li><strong>Embeddings enable neural integration</strong> of structured knowledge</li>
+                    <li><strong>Trade-off:</strong> Speed for interpretability. Use with symbolic constraints!</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Related Papers:</strong><br>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Grover, A., & Leskovec, J. (2016). "node2vec: Scalable Feature Learning for Networks"</li>
+                    <li>Bordes, A., et al. (2013). "Translating Embeddings for Modeling Multi-relational Data" (TransE)</li>
+                </ul>
+            </div>            <!-- Chapter Quiz -->
+            <div style="background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%); border: 2px solid #1976d2; padding: 25px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="color: #1976d2; font-size: 1.2em; margin-bottom: 10px;">🎯 Ready for Assessment?</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">10 Questions</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">~10 mins</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">70% to Pass</strong></div>
+                    </div>
+                </div>
+                <a href="../Quiz/chapter-13-quiz.html" style="background: #1976d2; color: white; padding: 12px 28px; border-radius: 4px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: 20px; display: inline-block; transition: all 0.3s ease; border: none;">Take Quiz Now →</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>Neuro-Symbolic AI Tutorial | Chapter 13: Graph Embeddings</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">This course was developed using Claude Code. Content is inspired by the Neuro-Symbolic AI course (DATASCI 290) from UC Berkeley's Master of Information and Data Science (MIDS) program, Spring 2026. For questions or feedback, <a href="mailto:kirthi.genai@gmail.com">Email</a> us.</p>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <a href="chapter-12-datalog.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">← Datalog</a>
+                <a href="../index.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 16px; display: inline-block; border-radius: 4px; transition: all 0.3s ease;">🏠 Home</a>
+                <a href="chapter-14-lifting-lowering.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">Lifting-Lowering →</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

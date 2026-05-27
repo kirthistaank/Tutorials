@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 18: Graph-of-Logic - Neuro-Symbolic AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #555; background: #ffffff; min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; }
+        header { background: white; color: #333; padding: 40px; border-bottom: 3px solid #1976d2; text-align: center; }
+        .chapter-number { display: inline-block; background: white; color: #1976d2; padding: 5px 12px; border-radius: 0; font-size: 0.85em; margin-bottom: 10px; font-weight: bold; border: 1px solid #1976d2; }
+        header h1 { font-size: 2.5em; margin: 15px 0 10px 0; color: #333; }
+        header p { font-size: 1.1em; color: #999; margin: 10px 0; }
+        .content { padding: 40px; }
+        h2 { color: #333; font-size: 1.8em; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin: 30px 0 15px 0; }
+        h3 { color: #555; font-size: 1.3em; margin: 25px 0 15px 0; }
+        h4 { color: #1976d2; font-size: 1.1em; margin: 20px 0 10px 0; }
+        p { font-size: 1.05em; line-height: 1.8; margin: 15px 0; }
+        .highlight-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .highlight-box strong { color: #1976d2; }
+        .concept-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .concept-box strong { color: #1976d2; }
+        .key-points { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .key-points h4 { color: #ff9800; }
+        .key-points ul { margin-left: 20px; }
+        .key-points li { margin: 10px 0; }
+        .example-box { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .example-box h4 { color: #ff9800; }
+        .code-block { border-left: 4px solid #1976d2; background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; font-family: 'Courier New', monospace; font-size: 0.95em; overflow-x: auto; }
+        .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+        .diagram-box { border: 1px solid #e0e0e0; background: white; padding: 20px; margin: 20px 0; text-align: center; border-radius: 0; }
+        .diagram-box svg { max-width: 100%; height: auto; display: inline-block; }
+        .diagram-label { font-style: italic; color: #666; font-size: 0.95em; margin-top: 10px; }
+        table { width: 100%; margin: 20px 0; border-collapse: collapse; }
+        th { color: #1976d2; padding: 15px; text-align: left; font-weight: bold; border-bottom: 2px solid #1976d2; }
+        td { padding: 15px; border-bottom: 1px solid #e0e0e0; }
+        tr:hover { background: #f9f9f9; }
+        .navigation { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0e0e0; }
+        .nav-button { background: white; color: #1976d2; padding: 10px 20px; text-decoration: none; border: 2px solid #1976d2; border-radius: 0; transition: all 0.3s ease; font-weight: 500; cursor: pointer; }
+        .nav-button:hover { background: #1976d2; color: white; }
+        footer { background: white; padding: 30px; text-align: center; color: #999; border-top: 1px solid #e0e0e0; font-size: 0.9em; }
+        @media (max-width: 768px) { header h1 { font-size: 1.8em; } .content { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="chapter-number">CHAPTER 18</div>
+            <h1>🔗 Graph-of-Logic</h1>
+            <p>Structured Inference Graphs for LLM Reasoning</p>
+        </header>
+
+        <div class="content">
+            <div class="highlight-box">
+                <strong>Learning Objectives:</strong><br>
+                Learn how to structure LLM reasoning as explicit inference graphs. Understand nodes (claims), edges (dependencies), and confidence propagation. Implement medical diagnosis as graph-of-logic.
+            </div>
+
+            <h2>Original Paper</h2>
+
+            <div class="highlight-box">
+                <strong>Citation:</strong><br>
+                Alotaibi, F., Kulkarni, A., & Zhou, D. (2024, December). "Graph of Logic: Enhancing LLM Reasoning with Graphs and Symbolic Logic." In <em>2024 IEEE International Conference on Big Data (BigData)</em> (pp. 5926-5935). IEEE.<br>
+                <br>
+                <strong>DOI:</strong> <a href="https://doi.org/10.1109/BigData62323.2024.10825694" target="_blank">10.1109/BigData62323.2024.10825694</a><br>
+                <strong>Conference:</strong> IEEE BigData 2024<br>
+                <strong>Authors:</strong> Fatima Alotaibi, Ananya Kulkarni, Denny Zhou
+            </div>
+
+            <h2>From Tree-of-Thought to Graph-of-Logic</h2>
+
+            <p>
+                While Tree-of-Thought explores multiple reasoning paths, Graph-of-Logic adds explicit logical structure. Nodes represent claims, edges represent logical dependencies (AND, OR, NOT, IMPLIES), and confidence propagates through the graph.
+            </p>
+
+            <div class="concept-box">
+                <strong>Key Innovation (Alotaibi et al., 2024):</strong><br>
+                "By representing LLM reasoning as an explicit inference graph with symbolic logic operators on edges, we enable: (1) transparent reasoning paths, (2) confidence propagation, (3) conflict detection, and (4) full explainability for high-stakes decisions."
+            </div>
+
+            <h2>Graph-of-Logic Structure</h2>
+
+            <div class="diagram-box">
+                <svg viewBox="0 0 900 550" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead-gol" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#1976d2" />
+                        </marker>
+                    </defs>
+
+                    <!-- Title -->
+                    <text x="450" y="30" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Medical Diagnosis as Graph-of-Logic</text>
+
+                    <!-- Root node (conclusion) -->
+                    <circle cx="450" cy="80" r="45" fill="white" stroke="#1976d2" stroke-width="2"/>
+                    <text x="450" y="75" font-size="11" font-weight="bold" text-anchor="middle" fill="#1976d2">Diagnosis:</text>
+                    <text x="450" y="92" font-size="10" text-anchor="middle" fill="#1976d2">Sepsis</text>
+
+                    <!-- Level 1: Support nodes -->
+                    <!-- Left: Fever -->
+                    <circle cx="200" cy="180" r="40" fill="white" stroke="#1976d2" stroke-width="2"/>
+                    <text x="200" y="180" font-size="10" font-weight="bold" text-anchor="middle" fill="#1976d2">Fever</text>
+                    <text x="200" y="195" font-size="9" text-anchor="middle" fill="#666">conf: 0.9</text>
+
+                    <!-- Middle: Infection -->
+                    <circle cx="450" cy="180" r="40" fill="white" stroke="#ff9800" stroke-width="2"/>
+                    <text x="450" y="178" font-size="10" font-weight="bold" text-anchor="middle" fill="#ff9800">Infection</text>
+                    <text x="450" y="197" font-size="9" text-anchor="middle" fill="#666">conf: 0.8</text>
+
+                    <!-- Right: Low BP -->
+                    <circle cx="700" cy="180" r="40" fill="white" stroke="#1976d2" stroke-width="2"/>
+                    <text x="700" y="175" font-size="10" font-weight="bold" text-anchor="middle" fill="#1976d2">Low BP</text>
+                    <text x="700" y="195" font-size="9" text-anchor="middle" fill="#666">conf: 0.85</text>
+
+                    <!-- Edges with logic operators -->
+                    <line x1="220" y1="150" x2="410" y2="110" stroke="#1976d2" stroke-width="2" marker-end="url(#arrowhead-gol)"/>
+                    <text x="280" y="120" font-size="10" font-weight="bold" fill="#1976d2">AND</text>
+
+                    <line x1="480" y1="150" x2="470" y2="110" stroke="#ff9800" stroke-width="2" marker-end="url(#arrowhead-gol)"/>
+                    <text x="505" y="120" font-size="10" font-weight="bold" fill="#ff9800">AND</text>
+
+                    <line x1="680" y1="150" x2="490" y2="110" stroke="#1976d2" stroke-width="2" marker-end="url(#arrowhead-gol)"/>
+                    <text x="620" y="120" font-size="10" font-weight="bold" fill="#1976d2">AND</text>
+
+                    <!-- Level 2: Evidence nodes -->
+                    <!-- Temp evidence -->
+                    <rect x="140" y="280" width="120" height="50" fill="white" stroke="#9c27b0" stroke-width="1" rx="0"/>
+                    <text x="200" y="295" font-size="9" font-weight="bold" text-anchor="middle" fill="#333">Temp: 39.5C</text>
+                    <text x="200" y="310" font-size="8" text-anchor="middle" fill="#666">conf: 0.95</text>
+
+                    <!-- WBC evidence -->
+                    <rect x="390" y="280" width="120" height="50" fill="white" stroke="#9c27b0" stroke-width="1" rx="0"/>
+                    <text x="450" y="295" font-size="9" font-weight="bold" text-anchor="middle" fill="#333">WBC: 15K</text>
+                    <text x="450" y="310" font-size="8" text-anchor="middle" fill="#666">conf: 0.88</text>
+
+                    <!-- Blood culture evidence -->
+                    <rect x="100" y="360" width="140" height="50" fill="white" stroke="#9c27b0" stroke-width="1" rx="0"/>
+                    <text x="170" y="375" font-size="9" font-weight="bold" text-anchor="middle" fill="#333">Blood culture</text>
+                    <text x="170" y="390" font-size="8" text-anchor="middle" fill="#666">positive: 0.92</text>
+
+                    <!-- BP evidence -->
+                    <rect x="640" y="280" width="120" height="50" fill="white" stroke="#9c27b0" stroke-width="1" rx="0"/>
+                    <text x="700" y="295" font-size="9" font-weight="bold" text-anchor="middle" fill="#333">BP: 85/50</text>
+                    <text x="700" y="310" font-size="8" text-anchor="middle" fill="#666">conf: 0.90</text>
+
+                    <!-- Edges from evidence to claims -->
+                    <line x1="200" y1="230" x2="200" y2="280" stroke="#9c27b0" stroke-width="1" stroke-dasharray="3,3"/>
+                    <line x1="450" y1="230" x2="450" y2="280" stroke="#9c27b0" stroke-width="1" stroke-dasharray="3,3"/>
+                    <line x1="170" y1="220" x2="420" y2="220" stroke="#9c27b0" stroke-width="1" stroke-dasharray="3,3"/>
+                    <line x1="700" y1="230" x2="700" y2="280" stroke="#9c27b0" stroke-width="1" stroke-dasharray="3,3"/>
+
+                    <!-- Confidence propagation -->
+                    <rect x="20" y="460" width="860" height="70" fill="#f5f5f5" stroke="#ddd" rx="0"/>
+                    <text x="450" y="480" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Confidence Propagation (Bottom-Up)</text>
+                    <text x="30" y="505" font-size="10" fill="#333">Evidence confidences: Temp(0.95), WBC(0.88), Culture(0.92), BP(0.90)</text>
+                    <text x="30" y="520" font-size="10" fill="#333">Combined (AND): min(0.95, 0.88, 0.92, 0.90) = 0.88</text>
+                </svg>
+                <p class="diagram-label">Figure 1 (Alotaibi et al., 2024): Graph-of-Logic for medical diagnosis with confidence propagation</p>
+            </div>
+
+            <h2>Key Components</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Claim Nodes</strong></td>
+                        <td>Represent propositions or diagnoses</td>
+                        <td>"Patient has sepsis", "Fever > 38.3C"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Evidence Nodes</strong></td>
+                        <td>Factual evidence supporting claims</td>
+                        <td>"Temp: 39.5C", "WBC: 15K", "Positive culture"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Logic Edges</strong></td>
+                        <td>Operators: AND, OR, NOT, IMPLIES</td>
+                        <td>Fever AND Infection AND LowBP → Sepsis</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Confidence</strong></td>
+                        <td>0.0-1.0 score for each node</td>
+                        <td>Fever: 0.9, combined diagnosis: 0.88</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Confidence Propagation Rules</h2>
+
+            <p>
+                How confidence flows through logic operators:
+            </p>
+
+            <div class="code-block"><pre>
+# Graph-of-Logic confidence propagation
+AND operator: conf(A AND B) = min(conf(A), conf(B))
+  Example: min(0.9, 0.8) = 0.8 (chain is as weak as weakest link)
+
+OR operator: conf(A OR B) = max(conf(A), conf(B))
+  Example: max(0.9, 0.8) = 0.9 (at least one must be true)
+
+NOT operator: conf(NOT A) = 1 - conf(A)
+  Example: 1 - 0.7 = 0.3 (if A is 70% likely, NOT A is 30% likely)
+
+IMPLIES: conf(A IMPLIES B) = (1 - conf(A)) + (conf(A) * conf(B))
+  Example: if fever (0.9) implies sepsis, then:
+           conf = (1 - 0.9) + (0.9 * 0.8) = 0.1 + 0.72 = 0.82
+            </pre></div>
+
+            <h2>Implementation: Medical Diagnosis Graph</h2>
+
+            <div class="code-block"><pre>
+# Graph-of-Logic implementation for sepsis diagnosis
+from anthropic import Anthropic
+import json
+
+client = Anthropic()
+
+class GoLNode:
+    def __init__(self, claim, node_type="claim"):
+        self.claim = claim
+        self.node_type = node_type  # "claim", "evidence"
+        self.confidence = 0.0
+        self.children = []  # Evidence nodes supporting this claim
+        self.operator = None  # AND, OR, NOT
+
+def gol_medical_diagnosis(patient_symptoms):
+    """Diagnose using Graph-of-Logic reasoning"""
+
+    # Step 1: Extract symptoms and evidence
+    prompt = f"""
+Patient presentation: {patient_symptoms}
+
+Identify EVIDENCE NODES (factual observations):
+- Format: "Observation: [description], confidence: 0.X"
+- Example: "Fever: 39.5C, confidence: 0.95"
+
+List all evidence nodes with confidence scores."""
+
+    evidence_response = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=400,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    evidence_nodes = evidence_response.content[0].text
+
+    # Step 2: Build claim hierarchy
+    claim_prompt = f"""
+Given these evidence nodes:
+{evidence_nodes}
+
+What are the possible DIAGNOSES (claim nodes)?
+For each diagnosis, specify:
+1. The claim (e.g., "Sepsis")
+2. Required evidence (e.g., "Fever AND Positive Culture AND Low BP")
+3. Logic operator combining evidence (AND/OR)
+4. Expected confidence
+
+Format:
+DIAGNOSIS: [name]
+EVIDENCE_LOGIC: [claim logic]
+OPERATOR: [AND/OR]
+"""
+
+    claims_response = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=500,
+        messages=[{"role": "user", "content": claim_prompt}]
+    )
+    claims = claims_response.content[0].text
+
+    # Step 3: Propagate confidence through graph
+    propagation_prompt = f"""
+Given the evidence and claims:
+
+Evidence: {evidence_nodes}
+Claims: {claims}
+
+For EACH diagnosis:
+1. List supporting evidence
+2. Calculate confidence using logic operators:
+   - AND: min(conf1, conf2, conf3...)
+   - OR: max(conf1, conf2)
+3. Determine final diagnosis confidence
+
+Output as JSON:
+{
+  "diagnosis": "Sepsis",
+  "evidence": ["Fever: 0.95", "Low BP: 0.90", "Positive culture: 0.92"],
+  "logic": "AND",
+  "confidence": 0.90,
+  "clinical_severity": "CRITICAL"
+}
+"""
+
+    propagation_response = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=600,
+        messages=[{"role": "user", "content": propagation_prompt}]
+    )
+    final_diagnosis = propagation_response.content[0].text
+
+    return {
+        "evidence": evidence_nodes,
+        "claims": claims,
+        "final_diagnosis": final_diagnosis
+    }
+
+
+# Example usage
+result = gol_medical_diagnosis(
+    patient_symptoms="""
+    65-year-old admitted with fever 39.5C, hypotensive (BP 85/50),
+    tachycardic (HR 110), elevated WBC 15K, positive blood culture,
+    altered mental status, severe malaise.
+    """
+)
+
+print("GRAPH-OF-LOGIC DIAGNOSIS")
+print("=" * 60)
+print(result["final_diagnosis"])
+            </pre></div>
+
+            <h2>Advantages Over Other Methods</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Transparency</th>
+                        <th>Logic Handling</th>
+                        <th>Explainability</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Chain-of-Thought</strong></td>
+                        <td>Step-by-step text</td>
+                        <td>Implicit in language</td>
+                        <td>High but informal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Logic-LM</strong></td>
+                        <td>Symbolic formulas</td>
+                        <td>Explicit, provably correct</td>
+                        <td>Very high, formal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Graph-of-Logic</strong></td>
+                        <td>Graph structure + semantics</td>
+                        <td>Explicit logic operators</td>
+                        <td>Very high, visual + formal</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>When to Use Graph-of-Logic</h2>
+
+            <div class="key-points">
+                <h4>Perfect For:</h4>
+                <ul>
+                    <li>✓ Multi-factor diagnosis (medical, forensic, criminal investigation)</li>
+                    <li>✓ Reasoning with multiple competing hypotheses</li>
+                    <li>✓ Situations requiring confidence tracking through complex logic</li>
+                    <li>✓ High-stakes decisions needing full auditability</li>
+                    <li>✓ Cases where you need to show "confidence in the overall conclusion"</li>
+                </ul>
+            </div>
+
+            <div class="concept-box">
+                <strong>Compared to Competitors:</strong><br>
+                vs CoT: More structured, explicit logic operators instead of natural language reasoning<br>
+                vs Logic-LM: Focuses on multi-path reasoning and confidence propagation, not hard constraints<br>
+                vs CoVe: Adds structural reasoning in addition to verification
+            </div>
+
+            <div class="key-points">
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li><strong>Graph-of-Logic</strong> = nodes (claims/evidence) + edges (logic operators) + confidence</li>
+                    <li><strong>Explicit logic:</strong> AND, OR, NOT, IMPLIES operators on edges</li>
+                    <li><strong>Confidence propagation:</strong> Bottom-up aggregation using min/max rules</li>
+                    <li><strong>Multi-hypothesis reasoning:</strong> Explore multiple diagnoses simultaneously</li>
+                    <li><strong>Fully explainable:</strong> Show exactly which evidence supports which diagnosis</li>
+                    <li><strong>Perfect for medical AI:</strong> Complex multi-factor diagnostics with confidence</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Original Paper:</strong><br>
+                Alotaibi, F., Kulkarni, A., & Zhou, D. (2024, December). "Graph of Logic: Enhancing LLM Reasoning with Graphs and Symbolic Logic." In <em>2024 IEEE International Conference on Big Data (BigData)</em> (pp. 5926-5935).<br>
+                <a href="https://doi.org/10.1109/BigData62323.2024.10825694" target="_blank">Available via IEEE: https://doi.org/10.1109/BigData62323.2024.10825694</a>
+            </div>            <!-- Chapter Quiz -->
+            <div style="background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%); border: 2px solid #1976d2; padding: 25px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="color: #1976d2; font-size: 1.2em; margin-bottom: 10px;">🎯 Ready for Assessment?</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">10 Questions</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">~10 mins</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">70% to Pass</strong></div>
+                    </div>
+                </div>
+                <a href="../Quiz/chapter-18-quiz.html" style="background: #1976d2; color: white; padding: 12px 28px; border-radius: 4px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: 20px; display: inline-block; transition: all 0.3s ease; border: none;">Take Quiz Now →</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>Neuro-Symbolic AI Tutorial | Chapter 18: Graph-of-Logic</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">Inspired by Alotaibi et al. (2024) and DATASCI 290 Course Material</p>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <a href="chapter-17-logic-lm.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">← Logic-LM</a>
+                <a href="../index.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 16px; display: inline-block; border-radius: 4px; transition: all 0.3s ease;">🏠 Home</a>
+                <a href="chapter-19-clinical-ai.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">Clinical AI →</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

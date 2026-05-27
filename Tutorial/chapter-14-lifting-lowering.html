@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 14: Lifting & Lowering Methods - Neuro-Symbolic AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #555; background: #ffffff; min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; }
+        header { background: white; color: #333; padding: 40px; border-bottom: 3px solid #1976d2; text-align: center; }
+        .chapter-number { display: inline-block; background: white; color: #1976d2; padding: 5px 12px; border-radius: 0; font-size: 0.85em; margin-bottom: 10px; font-weight: bold; border: 1px solid #1976d2; }
+        header h1 { font-size: 2.5em; margin: 15px 0 10px 0; color: #333; }
+        header p { font-size: 1.1em; color: #999; margin: 10px 0; }
+        .content { padding: 40px; }
+        h2 { color: #333; font-size: 1.8em; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin: 30px 0 15px 0; }
+        h3 { color: #555; font-size: 1.3em; margin: 25px 0 15px 0; }
+        h4 { color: #1976d2; font-size: 1.1em; margin: 20px 0 10px 0; }
+        p { font-size: 1.05em; line-height: 1.8; margin: 15px 0; }
+        .highlight-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .highlight-box strong { color: #1976d2; }
+        .concept-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .concept-box strong { color: #1976d2; }
+        .key-points { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .key-points h4 { color: #ff9800; }
+        .key-points ul { margin-left: 20px; }
+        .key-points li { margin: 10px 0; }
+        .example-box { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .example-box h4 { color: #ff9800; }
+        .code-block { border-left: 4px solid #1976d2; background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; font-family: 'Courier New', monospace; font-size: 0.95em; overflow-x: auto; }
+        .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+        .navigation { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0e0e0; }
+        .nav-button { background: white; color: #1976d2; padding: 10px 20px; text-decoration: none; border: 2px solid #1976d2; border-radius: 0; transition: all 0.3s ease; font-weight: 500; cursor: pointer; }
+        .nav-button:hover { background: #1976d2; color: white; }
+        footer { background: white; padding: 30px; text-align: center; color: #999; border-top: 1px solid #e0e0e0; font-size: 0.9em; }
+        @media (max-width: 768px) { header h1 { font-size: 1.8em; } .content { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="chapter-number">CHAPTER 14</div>
+            <h1>🔄 Lifting & Lowering Neural-Symbolic Integration</h1>
+            <p>Two Approaches to Combining Neural Networks and Symbolic Reasoning</p>
+        </header>
+
+        <div class="content">
+            <div class="highlight-box">
+                <strong>Learning Objectives:</strong><br>
+                Understand the two main integration strategies in neuro-symbolic AI: Lowering (compress symbols into neural patterns) and Lifting (extract symbols from neural outputs). Learn attention rewiring and KG-RAG approaches.
+            </div>
+
+            <h2>The Two Integration Strategies</h2>
+
+            <p>
+                The core challenge of neuro-symbolic AI: how to combine neural perception (learning patterns) with symbolic reasoning (applying rules)? There are two fundamental approaches:
+            </p>
+
+            <table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+                <tr style="border-bottom: 2px solid #1976d2;">
+                    <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">Approach</th>
+                    <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">What It Does</th>
+                    <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">Pros</th>
+                    <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">Cons</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Lowering</strong></td>
+                    <td style="padding: 15px;">Compress symbolic knowledge into neural patterns</td>
+                    <td style="padding: 15px;">Fast, end-to-end differentiable</td>
+                    <td style="padding: 15px;">Less transparent, hard constraints not enforced</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Lifting</strong></td>
+                    <td style="padding: 15px;">Extract symbolic structure from neural outputs</td>
+                    <td style="padding: 15px;">Interpretable, enforces hard rules</td>
+                    <td style="padding: 15px;">Requires careful pipeline design, slower</td>
+                </tr>
+            </table>
+
+            <h2>Lowering: Compress Symbols into Neural Patterns</h2>
+
+            <p>
+                Lowering means embedding symbolic knowledge (facts, rules, graphs) directly into neural network representations, so the network can reason using learned patterns.
+            </p>
+
+            <div class="example-box">
+                <h4>Attention Rewiring: Knowledge Fusion with LLMs</h4>
+
+                <p>
+                    Instead of just passing text to an LLM, you can inject knowledge graph information into the neural computation itself.
+                </p>
+
+                <p><strong>How it works:</strong></p>
+                <ol style="margin-left: 20px;">
+                    <li>User asks: "What drug treats diabetes and hypertension?"</li>
+                    <li>Retrieve relevant KG triples: (drug_X, treats, diabetes), (drug_X, treats, hypertension)</li>
+                    <li>Convert KG triples to attention tensors (K,V pairs)</li>
+                    <li>Prepend these tensors to LLM's attention mechanism</li>
+                    <li>LLM now has direct access to KG facts during token prediction</li>
+                    <li>Output: More grounded, factually correct answer</li>
+                </ol>
+
+                <div class="code-block"><pre>
+# Attention Rewiring pseudocode
+def rewire_attention_with_kg(question, llm_model, knowledge_graph):
+    # Step 1: Query KG for relevant facts
+    relevant_triples = kg.query(question)
+    # E.g., [(diabetes, treats, metformin), (hypertension, treats, metformin)]
+
+    # Step 2: Convert triples to attention tensors
+    kg_keys = encode_triples_as_keys(relevant_triples)      # Shape: [num_triples, d]
+    kg_values = encode_triples_as_values(relevant_triples)  # Shape: [num_triples, d]
+
+    # Step 3: Prepend KG tensors to LLM's attention
+    # Normal LLM attention: Q @ K.T where K is word tokens
+    # Rewired: Q @ [kg_keys | word_keys].T
+    # Now LLM attends to both KG facts AND text context
+
+    for layer in llm_model.transformer_layers[selected_layers]:
+        original_K = layer.attention.key(question_tokens)
+        original_V = layer.attention.value(question_tokens)
+
+        # Prepend KG information
+        new_K = concat([kg_keys, original_K])
+        new_V = concat([kg_values, original_V])
+
+        layer.attention.K = new_K
+        layer.attention.V = new_V
+
+    # Step 4: Generate output (now informed by KG)
+    output = llm_model.generate(question)
+    return output
+                </pre></div>
+
+                <p><strong>Result:</strong> LLM generates answers grounded in knowledge graph facts, not hallucinations.</p>
+            </div>
+
+            <h2>KG-RAG: Knowledge Graph Retrieval-Augmented Generation</h2>
+
+            <p>
+                KG-RAG combines knowledge graphs with RAG: retrieve relevant evidence subgraphs, then generate grounded answers.
+            </p>
+
+            <div class="example-box">
+                <h4>Medical Diagnosis with KG-RAG</h4>
+
+                <div class="code-block"><pre>
+# Question: "Why might aspirin help this patient?"
+# Patient: 75-year-old with heart disease, high blood pressure, no aspirin allergy
+
+# Step 1: Retrieve relevant subgraph
+query = """
+MATCH (drug:Drug)-[r1:treats]->(condition:Condition),
+      (drug)-[r2:has_mechanism]->(mechanism:Mechanism),
+      (drug)-[r3:has_side_effect]->(effect:Effect)
+WHERE drug.name = 'aspirin'
+RETURN drug, condition, mechanism, effect, r1, r2, r3
+"""
+
+evidence_subgraph = kg.execute(query)
+# Returns: aspirin → treats → cardiovascular disease
+#          aspirin → mechanism → inhibits platelet aggregation
+#          aspirin → side_effect → GI bleeding (CAUTION for this patient!)
+
+# Step 2: Feed to LLM with context
+prompt = f"""
+Based on this knowledge graph evidence:
+{format_evidence(evidence_subgraph)}
+
+Patient: 75-year-old, heart disease, high BP, no aspirin allergy
+
+Question: Why might aspirin help this patient?
+Be sure to mention:
+- How it works (mechanism)
+- Any relevant risks (side effects)
+- Why it's suitable for THIS patient
+"""
+
+answer = llm.generate(prompt)
+# Output: "Aspirin works by inhibiting platelet aggregation, reducing
+#          heart attack risk. The main concern would be GI bleeding in
+#          elderly patients, but this patient has no documented GI issues..."
+                </pre></div>
+            </div>
+
+            <h2>Lifting: Extract Symbols from Neural Outputs</h2>
+
+            <p>
+                Lifting means taking neural network outputs (which are implicit, continuous) and converting them into explicit symbolic structures (facts, rules, graphs) that can be reasoned over.
+            </p>
+
+            <div class="example-box">
+                <h4>Clinical Lifting Pipeline</h4>
+
+                <p><strong>The pipeline:</strong></p>
+                <div class="code-block"><pre>
+# Step 1: Neural Perception (implicit)
+patient_text = "Patient has fever 101F, cough for 2 days, no trouble breathing"
+nlp_output = nlp_model(patient_text)
+# Output: Dense embeddings, attention weights (implicit knowledge)
+
+# Step 2: Entity & Relation Extraction (lifting to symbolic)
+entities = extract_entities(patient_text)
+# [SYMPTOM: fever, SEVERITY: 101F, SYMPTOM: cough, DURATION: 2days, ...]
+
+relations = extract_relations(patient_text, entities)
+# [has_symptom(patient, fever), severity(fever, 101F), has_symptom(patient, cough), ...]
+
+# Step 3: Build Symbolic Graph (now explicit, auditable)
+symbolic_facts = {
+    'has_symptom(patient, fever)': True,
+    'severity(fever, 101F)': True,
+    'has_symptom(patient, cough)': True,
+    'duration(cough, 2days)': True,
+    'has_difficulty_breathing': False
+}
+
+# Step 4: Apply Symbolic Rules (explicit inference)
+if symbolic_facts['has_symptom(patient, fever)'] and \
+   symbolic_facts['has_symptom(patient, cough)'] and \
+   not symbolic_facts['has_difficulty_breathing']:
+    diagnosis = 'Probable viral URI'
+    severity = 'mild'
+else:
+    escalate_to_expert()
+
+# Step 5: Generate Explanation (traceable)
+explanation = f"""
+Diagnosis: {diagnosis}
+Based on:
+- Patient has fever (101F) ✓
+- Patient has cough (2 days) ✓
+- No respiratory distress ✓
+Rule fired: fever + cough + no_distress → viral_URI
+Confidence: 0.85
+Recommendation: Monitor for 48 hours, escalate if worsens
+"""
+                </pre></div>
+            </div>
+
+            <h2>Lifting Components: Entity and Relation Extraction</h2>
+
+            <p>
+                The key lifting operations are:
+            </p>
+
+            <ul style="margin-left: 20px; margin: 15px 0;">
+                <li><strong>Entity Extraction (NER):</strong> Identify what things are mentioned (diseases, drugs, symptoms, etc.)</li>
+                <li><strong>Relation Extraction:</strong> Identify relationships between entities (treats, causes, contraindicates)</li>
+                <li><strong>Coreference Resolution:</strong> Link pronouns and aliases to entities ("it" → disease, "the drug" → aspirin)</li>
+                <li><strong>Fact Assembly:</strong> Convert extracted info into symbolic facts/triples</li>
+                <li><strong>Consistency Checking:</strong> Verify facts don't contradict knowledge base</li>
+            </ul>
+
+            <h2>Lowering vs Lifting: When to Use Each</h2>
+
+            <div class="concept-box">
+                <strong>Use Lowering When:</strong><br>
+                ✓ You want end-to-end learning (knowledge and neural weights optimize together)<br>
+                ✓ Speed is critical (no intermediate extraction step)<br>
+                ✓ Knowledge is dense (large KG, many triples)<br>
+                ✗ But: Hard constraints not guaranteed, less interpretable
+            </div>
+
+            <div class="concept-box">
+                <strong>Use Lifting When:</strong><br>
+                ✓ You need interpretability and auditability<br>
+                ✓ You need to enforce hard constraints (safety rules, regulations)<br>
+                ✓ You need to check for contradictions<br>
+                ✗ But: Requires good NLP models, slower, error-prone extraction
+            </div>
+
+            <h2>Hybrid Approaches</h2>
+
+            <p>
+                Many systems combine both:
+            </p>
+
+            <div class="example-box">
+                <h4>Lifting + Symbolic Reasoning + Lowering (3-Step Pipeline)</h4>
+
+                <div class="code-block"><pre>
+# Step 1: LIFTING (Neural → Symbolic)
+patient_description = "70-year-old with chest pain and shortness of breath"
+extracted_facts = lift_text_to_facts(patient_description)
+# Output: [age(patient, 70), symptom(patient, chest_pain), symptom(patient, SOB)]
+
+# Step 2: SYMBOLIC REASONING (Symbolic → Symbolic)
+inferred_facts = apply_rules(extracted_facts)
+# Rules fired: symptom(X, chest_pain) ∧ symptom(X, SOB) → urgent(X)
+# Output: [age(patient, 70), ..., urgent(patient)]
+
+# Step 3: VERIFICATION & GROUNDING (Symbolic → Neural)
+# Check facts against learned embeddings
+fact_confidence = verify_with_embedding_space(inferred_facts)
+# If confidence < threshold, return to neural for clarification
+
+if fact_confidence > 0.8:
+    recommendation = "Send to ER immediately"
+else:
+    recommendation = "Request clarification from clinician"
+                </pre></div>
+            </div>
+
+            <div class="key-points">
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li><strong>Lowering</strong> = compress symbols into neural (fast, learned, less transparent)</li>
+                    <li><strong>Lifting</strong> = extract symbols from neural (interpretable, verifiable, slower)</li>
+                    <li><strong>Attention rewiring</strong> injects KG facts directly into LLM computation</li>
+                    <li><strong>KG-RAG</strong> retrieves evidence subgraphs to ground generation</li>
+                    <li><strong>Entity/relation extraction</strong> is the core lifting operation</li>
+                    <li><strong>Hybrid systems</strong> combine both for transparency + performance</li>
+                </ul>
+            </div>            <!-- Chapter Quiz -->
+            <div style="background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%); border: 2px solid #1976d2; padding: 25px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="color: #1976d2; font-size: 1.2em; margin-bottom: 10px;">🎯 Ready for Assessment?</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">10 Questions</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">~10 mins</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">70% to Pass</strong></div>
+                    </div>
+                </div>
+                <a href="../Quiz/chapter-14-quiz.html" style="background: #1976d2; color: white; padding: 12px 28px; border-radius: 4px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: 20px; display: inline-block; transition: all 0.3s ease; border: none;">Take Quiz Now →</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>Neuro-Symbolic AI Tutorial | Chapter 14: Lifting & Lowering</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">This course was developed using Claude Code. Content is inspired by the Neuro-Symbolic AI course (DATASCI 290) from UC Berkeley's Master of Information and Data Science (MIDS) program, Spring 2026. For questions or feedback, <a href="mailto:kirthi.genai@gmail.com">Email</a> us.</p>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <a href="chapter-13-graph-embeddings.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">← Embeddings</a>
+                <a href="../index.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 16px; display: inline-block; border-radius: 4px; transition: all 0.3s ease;">🏠 Home</a>
+                <a href="chapter-15-chain-of-thought.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">CoT →</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

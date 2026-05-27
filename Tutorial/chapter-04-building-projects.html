@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Neuro-Symbolic Projects - Neuro-Symbolic AI Tutorial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        header {
+            background: white;
+            color: #333;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 3px solid #1976d2;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        header p {
+            font-size: 1.1em;
+            color: #999;
+        }
+
+        .chapter-number {
+            display: inline-block;
+            background: white;
+            color: #1976d2;
+            padding: 5px 15px;
+            border-radius: 0;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            border: 1px solid #1976d2;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #333;
+            margin: 30px 0 15px 0;
+            font-size: 1.8em;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #555;
+            margin: 25px 0 12px 0;
+            font-size: 1.3em;
+        }
+
+        p {
+            margin: 15px 0;
+            font-size: 1.05em;
+            line-height: 1.8;
+        }
+
+        .concept-box {
+            background: white;
+            border-left: 4px solid #1976d2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+
+        .concept-box strong {
+            color: #1976d2;
+        }
+
+        .example-box {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+
+        .example-box h4 {
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            color: #333;
+            padding: 15px;
+            border-radius: 0;
+            border-left: 4px solid #1976d2;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.4;
+            white-space: pre;
+            word-wrap: break-word;
+        }
+
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        svg {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            display: block;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th {
+            background: white;
+            color: #1976d2;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #1976d2;
+        }
+
+        .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .key-points {
+            background: white;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+
+        .key-points h4 {
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+
+        .key-points ul {
+            list-style-position: inside;
+            margin-left: 10px;
+        }
+
+        .key-points li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .step-box {
+            background: white;
+            border-left: 4px solid #1976d2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+
+        .step-box strong {
+            color: #1976d2;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .nav-button {
+            display: inline-block;
+            background: white;
+            color: #1976d2;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 0;
+            border: 2px solid #1976d2;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-button:hover {
+            background: #1976d2;
+            color: white;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+        }
+
+        footer {
+            background: white;
+            padding: 20px 40px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 30px 0;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="chapter-number">CHAPTER 4</div>
+            <h1>🛠️ Building Neuro-Symbolic Projects</h1>
+            <p>From Concept to Deployed System</p>
+        </header>
+
+        <div class="content">
+            <h2>Your First Neuro-Symbolic Project</h2>
+            <p>
+                This chapter walks you through building a complete neuro-symbolic AI system from scratch. We'll create a <strong>Medical Triage System</strong> that safely processes patient input and recommends appropriate actions.
+            </p>
+
+            <div class="concept-box">
+                <strong>What We're Building:</strong> A system that uses neural networks to understand patient symptoms and symbolic rules to make safe clinical recommendations.
+            </div>
+
+            <h2>Project Architecture Overview</h2>
+
+            <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#1976d2" />
+                    </marker>
+                </defs>
+
+                <!-- Layer 1: Input -->
+                <rect x="50" y="20" width="700" height="50" fill="#1976d2" rx="0"/>
+                <text x="400" y="52" text-anchor="middle" fill="white" font-weight="bold" font-size="14">Patient Input Layer: "I have chest pain and trouble breathing"</text>
+
+                <!-- Arrow -->
+                <line x1="400" y1="70" x2="400" y2="100" stroke="#1976d2" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Layer 2: Neural Extraction -->
+                <rect x="50" y="100" width="300" height="80" fill="#1976d2" rx="0" opacity="0.8"/>
+                <text x="200" y="130" text-anchor="middle" fill="white" font-weight="bold" font-size="13">Neural NLU Layer</text>
+                <text x="200" y="150" text-anchor="middle" fill="white" font-size="11">(LLM / Transformer)</text>
+                <text x="200" y="165" text-anchor="middle" fill="white" font-size="10">Extract symptoms, context</text>
+
+                <!-- Arrow -->
+                <line x1="350" y1="140" x2="430" y2="140" stroke="#1976d2" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Layer 2b: Extracted Data -->
+                <rect x="430" y="100" width="320" height="80" fill="#fff3e0" rx="0"/>
+                <text x="590" y="130" text-anchor="middle" fill="#333" font-weight="bold" font-size="11">Extracted Entities:</text>
+                <text x="590" y="150" text-anchor="middle" fill="#333" font-size="10">symptoms: [chest_pain, dyspnea]</text>
+                <text x="590" y="165" text-anchor="middle" fill="#333" font-size="10">confidence: 0.92</text>
+
+                <!-- Arrow -->
+                <line x1="200" y1="180" x2="200" y2="210" stroke="#1976d2" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Layer 3: Knowledge Graph -->
+                <rect x="50" y="210" width="300" height="80" fill="#1976d2" rx="0" opacity="0.8"/>
+                <text x="200" y="240" text-anchor="middle" fill="white" font-weight="bold" font-size="13">Knowledge Graph</text>
+                <text x="200" y="260" text-anchor="middle" fill="white" font-size="11">(Entities, Relationships,</text>
+                <text x="200" y="275" text-anchor="middle" fill="white" font-size="11">Rules)</text>
+
+                <!-- Arrow -->
+                <line x1="350" y1="250" x2="430" y2="250" stroke="#1976d2" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Layer 3b: Rule Application -->
+                <rect x="430" y="210" width="320" height="80" fill="#fff3e0" rx="0"/>
+                <text x="590" y="240" text-anchor="middle" fill="#333" font-weight="bold" font-size="11">Rule Evaluation:</text>
+                <text x="590" y="260" text-anchor="middle" fill="#333" font-size="10">✓ Matches red-flag rule</text>
+                <text x="590" y="275" text-anchor="middle" fill="#333" font-size="10">Action: ESCALATE</text>
+
+                <!-- Arrow -->
+                <line x1="200" y1="290" x2="200" y2="320" stroke="#1976d2" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Layer 4: Safety Check -->
+                <rect x="50" y="320" width="300" height="80" fill="#ff9800" rx="0" opacity="0.8"/>
+                <text x="200" y="350" text-anchor="middle" fill="white" font-weight="bold" font-size="13">Safety Constraints</text>
+                <text x="200" y="370" text-anchor="middle" fill="white" font-size="11">(Verify recommendations)</text>
+                <text x="200" y="385" text-anchor="middle" fill="white" font-size="10">Pass: ✓</text>
+
+                <!-- Arrow -->
+                <line x1="350" y1="360" x2="430" y2="360" stroke="#1976d2" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Layer 4b: Output -->
+                <rect x="430" y="320" width="320" height="80" fill="#fff3e0" rx="0"/>
+                <text x="590" y="350" text-anchor="middle" fill="#333" font-weight="bold" font-size="11">Final Output:</text>
+                <text x="590" y="370" text-anchor="middle" fill="#333" font-size="10">"Urgent: Escalate to ER"</text>
+                <text x="590" y="385" text-anchor="middle" fill="#333" font-size="10">Confidence: HIGH</text>
+
+                <!-- Arrow -->
+                <line x1="400" y1="400" x2="400" y2="430" stroke="#1976d2" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Layer 5: Output -->
+                <rect x="50" y="430" width="700" height="50" fill="#1976d2" rx="0"/>
+                <text x="400" y="462" text-anchor="middle" fill="white" font-weight="bold" font-size="14">User Action: Direct to Emergency Department</text>
+            </svg>
+
+            <h2>Step 1: Set Up Your Project Structure</h2>
+
+            <div class="step-box">
+                <strong>Create the following folder structure:</strong>
+            </div>
+
+            <div class="code-block"><pre>medical-triage-system/
+├── README.md
+├── requirements.txt
+├── src/
+│   ├── __init__.py
+│   ├── extraction.py      # Neural NLU
+│   ├── knowledge_graph.py  # KG definition
+│   ├── rules.py           # Inference rules
+│   ├── triage.py          # Main logic
+│   └── utils.py           # Helpers
+├── data/
+│   ├── symptoms.json      # Symptom definitions
+│   ├── red_flags.json     # Critical symptoms
+│   └── test_cases.json    # Test scenarios
+├── tests/
+│   ├── test_extraction.py
+│   ├── test_rules.py
+│   └── test_integration.py
+└── notebooks/
+    └── analysis.ipynb     # Analysis & benchmarking</pre></div>
+
+            <h2>Step 2: Define Your Knowledge Graph</h2>
+
+            <div class="step-box">
+                <strong>Create `src/knowledge_graph.py` - Define entities, relationships, and rules</strong>
+            </div>
+
+            <div class="code-block"><pre>import networkx as nx
+import json
+
+class MedicalKnowledgeGraph:
+    def __init__(self):
+        self.graph = nx.DiGraph()
+        self.rules = []
+        self._build_graph()
+
+    def _build_graph(self):
+        """Build basic medical KG"""
+        # Add nodes (entities)
+        diseases = ['acute_coronary_syndrome', 'pneumonia', 'anxiety', 'asthma']
+        symptoms = ['chest_pain', 'shortness_of_breath', 'sweating', 'cough']
+
+        for disease in diseases:
+            self.graph.add_node(disease, type='disease')
+        for symptom in symptoms:
+            self.graph.add_node(symptom, type='symptom')
+
+        # Add relationships
+        edges = [
+            ('chest_pain', 'acute_coronary_syndrome', 'manifests_as'),
+            ('shortness_of_breath', 'acute_coronary_syndrome', 'manifests_as'),
+            ('sweating', 'acute_coronary_syndrome', 'manifests_as'),
+            ('cough', 'pneumonia', 'manifests_as'),
+            ('shortness_of_breath', 'pneumonia', 'manifests_as'),
+            ('chest_pain', 'anxiety', 'manifests_as'),
+        ]
+
+        for src, tgt, rel in edges:
+            self.graph.add_edge(src, tgt, relation=rel)
+
+    def add_rule(self, name, condition_fn, consequence_fn):
+        """Add inference rule"""
+        self.rules.append({
+            'name': name,
+            'condition': condition_fn,
+            'consequence': consequence_fn
+        })
+
+    def query_symptom_matches(self, symptoms_detected):
+        """Find diseases matching detected symptoms"""
+        matches = {}
+        for disease in [n for n, attr in self.graph.nodes(data=True)
+                        if attr.get('type') == 'disease']:
+            # Count matching symptoms
+            predecessors = set(self.graph.predecessors(disease))
+            matched = sum(1 for s in symptoms_detected if s in predecessors)
+            if matched > 0:
+                matches[disease] = matched / len(list(self.graph.predecessors(disease)))
+        return matches</pre></div>
+
+            <h2>Step 3: Implement Neural Extraction</h2>
+
+            <div class="step-box">
+                <strong>Create `src/extraction.py` - Use LLM to extract symptoms from patient text</strong>
+            </div>
+
+            <div class="code-block"><pre>from anthropic import Anthropic
+
+class SymptomExtractor:
+    def __init__(self):
+        self.client = Anthropic()
+
+    def extract_symptoms(self, patient_text: str) -> dict:
+        """
+        Use Claude to extract symptoms from patient description
+        """
+        prompt = f"""
+Given the patient's description, extract:
+1. List of symptoms mentioned
+2. Duration and severity (if mentioned)
+3. Associated context
+
+Patient text: "{patient_text}"
+
+Respond in JSON format:
+{{
+    "symptoms": ["symptom1", "symptom2"],
+    "severity": "mild|moderate|severe|unknown",
+    "duration_days": 3,
+    "context": "additional relevant info"
+}}
+        """
+
+        message = self.client.messages.create(
+            model="claude-3-5-sonnet-20241022",
+            max_tokens=1024,
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
+
+        # Parse response
+        import json
+        response_text = message.content[0].text
+        result = json.loads(response_text)
+        return result</pre></div>
+
+            <h2>Step 4: Implement Inference Rules</h2>
+
+            <div class="step-box">
+                <strong>Create `src/rules.py` - Define clinical decision rules</strong>
+            </div>
+
+            <div class="code-block"><pre>class TriageRules:
+    # Red flag symptoms requiring immediate escalation
+    RED_FLAGS = {
+        'chest_pain': {'severity_threshold': 'moderate', 'escalate': True},
+        'shortness_of_breath': {'severity_threshold': 'moderate', 'escalate': True},
+        'severe_headache': {'severity_threshold': 'severe', 'escalate': True},
+        'loss_of_consciousness': {'severity_threshold': 'mild', 'escalate': True},
+        'uncontrolled_bleeding': {'severity_threshold': 'mild', 'escalate': True},
+    }
+
+    @staticmethod
+    def check_red_flags(symptoms: list, severity: str) -> bool:
+        """
+        Check if any red flag symptoms are present
+        """
+        for symptom in symptoms:
+            if symptom in TriageRules.RED_FLAGS:
+                threshold = TriageRules.RED_FLAGS[symptom]['severity_threshold']
+                if TriageRules._meets_threshold(severity, threshold):
+                    return True
+        return False
+
+    @staticmethod
+    def _meets_threshold(actual: str, required: str) -> bool:
+        """Compare severity levels"""
+        severity_order = {'mild': 1, 'moderate': 2, 'severe': 3}
+        return severity_order.get(actual, 0) >= severity_order.get(required, 0)
+
+    @staticmethod
+    def determine_triage_level(symptoms: list, severity: str) -> str:
+        """
+        Determine triage level based on symptoms and severity
+        Return: 'emergency' | 'urgent' | 'standard' | 'minor'
+        """
+        if TriageRules.check_red_flags(symptoms, severity):
+            return 'emergency'
+        elif severity == 'severe':
+            return 'urgent'
+        elif severity == 'moderate':
+            return 'standard'
+        else:
+            return 'minor'</pre></div>
+
+            <h2>Step 5: Integrate Components</h2>
+
+            <div class="step-box">
+                <strong>Create `src/triage.py` - Main system logic</strong>
+            </div>
+
+            <div class="code-block"><pre>from extraction import SymptomExtractor
+from knowledge_graph import MedicalKnowledgeGraph
+from rules import TriageRules
+
+class MedicalTriageSystem:
+    def __init__(self):
+        self.extractor = SymptomExtractor()
+        self.kg = MedicalKnowledgeGraph()
+
+    def process_patient(self, patient_text: str) -> dict:
+        """
+        Full pipeline: extraction → KG reasoning → rules → output
+        """
+        # Step 1: Extract symptoms using neural network
+        extracted = self.extractor.extract_symptoms(patient_text)
+        symptoms = extracted['symptoms']
+        severity = extracted['severity']
+
+        # Step 2: Query knowledge graph
+        disease_matches = self.kg.query_symptom_matches(symptoms)
+
+        # Step 3: Apply safety rules
+        triage_level = TriageRules.determine_triage_level(symptoms, severity)
+
+        # Step 4: Generate response
+        response = {
+            'symptoms_detected': symptoms,
+            'severity': severity,
+            'possible_conditions': disease_matches,
+            'triage_level': triage_level,
+            'recommendation': self._generate_recommendation(triage_level),
+            'explanation': self._explain_decision(symptoms, triage_level)
+        }
+
+        return response
+
+    def _generate_recommendation(self, triage_level: str) -> str:
+        recommendations = {
+            'emergency': 'Go to Emergency Department immediately',
+            'urgent': 'See doctor today or visit urgent care',
+            'standard': 'Schedule appointment with primary care doctor',
+            'minor': 'Monitor symptoms; seek care if worsening'
+        }
+        return recommendations.get(triage_level, 'Seek medical advice')
+
+    def _explain_decision(self, symptoms: list, level: str) -> str:
+        return f"Based on symptoms {symptoms} and severity, " \
+               f"triage level is {level}"
+
+# Usage
+system = MedicalTriageSystem()
+result = system.process_patient("I have severe chest pain and can't breathe")
+print(result)</pre></div>
+
+            <h2>Step 6: Write Tests</h2>
+
+            <div class="step-box">
+                <strong>Create `tests/test_integration.py` - Validate with real medical scenarios</strong>
+            </div>
+
+            <div class="code-block"><pre>import pytest
+from src.triage import MedicalTriageSystem
+
+class TestTriageSystem:
+    @pytest.fixture
+    def system(self):
+        return MedicalTriageSystem()
+
+    def test_emergency_scenario(self, system):
+        """Test case: patient with red flag symptoms"""
+        result = system.process_patient(
+            "I have severe chest pain, shortness of breath, and I'm sweating"
+        )
+        assert result['triage_level'] == 'emergency'
+        assert 'Go to Emergency Department' in result['recommendation']
+
+    def test_minor_scenario(self, system):
+        """Test case: patient with minor symptoms"""
+        result = system.process_patient(
+            "I have a slight headache and feeling a bit tired"
+        )
+        assert result['triage_level'] in ['minor', 'standard']
+
+    def test_moderate_scenario(self, system):
+        """Test case: patient with moderate symptoms"""
+        result = system.process_patient(
+            "I have a cough, low fever, and mild chest discomfort"
+        )
+        assert result['triage_level'] in ['standard', 'urgent']
+
+# Run: pytest tests/test_integration.py</pre></div>
+
+            <h2>Step 7: Deploy and Monitor</h2>
+
+            <div class="step-box">
+                <strong>Create a simple Streamlit UI for interaction</strong>
+            </div>
+
+            <div class="code-block"><pre>import streamlit as st
+from src.triage import MedicalTriageSystem
+
+st.title("Medical Triage System")
+st.markdown("**Safety Notice:** This is an educational system. Always consult medical professionals.")
+
+system = MedicalTriageSystem()
+
+# Input
+patient_input = st.text_area("Describe your symptoms:")
+
+if st.button("Analyze Symptoms"):
+    if patient_input:
+        result = system.process_patient(patient_input)
+
+        # Display results
+        st.subheader("Triage Assessment")
+
+        # Color-code by triage level
+        level = result['triage_level']
+        color_map = {
+            'emergency': '🔴',
+            'urgent': '🟠',
+            'standard': '🟡',
+            'minor': '🟢'
+        }
+
+        st.write(f"### {color_map[level]} Level: {level.upper()}")
+        st.write(f"**Recommendation:** {result['recommendation']}")
+        st.write(f"**Detected Symptoms:** {', '.join(result['symptoms_detected'])}")
+        st.write(f"**Explanation:** {result['explanation']}")</pre></div>
+
+            <h2>Key Design Principles</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Principle</th>
+                        <th>Why It Matters</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Separation of Concerns</strong></td>
+                        <td>Neural (NLU) and symbolic (rules) are separate; easier to test and update</td>
+                        <td>Extraction module doesn't know about rules</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Explainability</strong></td>
+                        <td>Every decision is traceable; critical for healthcare</td>
+                        <td>System shows which symptoms triggered escalation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Safety First</strong></td>
+                        <td>Rules enforce hard constraints that cannot be violated</td>
+                        <td>Red flags always escalate, no exceptions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Testability</strong></td>
+                        <td>Every component can be tested independently and in combination</td>
+                        <td>Unit tests for rules, integration tests for pipeline</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Modularity</strong></td>
+                        <td>Easy to swap components (different LLM, different rules)</td>
+                        <td>Can upgrade to Claude 4.0 without changing rules</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-divider"></div>
+
+            <h2>Common Mistakes to Avoid</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th style="color: #ff6b6b;">❌ Don't</th>
+                        <th style="color: #51cf66;">✓ Do</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Put all logic in the neural network.</strong> This makes the system opaque and unsafe.</td>
+                        <td><strong>Use neural for extraction, rules for decisions.</strong> This makes the system transparent and trustworthy.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Write rules in code if they change frequently.</strong> Store them in a database or config file instead.</td>
+                        <td><strong>Structure your rules so they can be updated without re-deploying code.</strong> Keep rules externalized and versioned.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Skip testing.</strong> "It works on my machine" doesn't work in healthcare or high-stakes domains.</td>
+                        <td><strong>Test extensively with real and synthetic medical scenarios.</strong> Validate every edge case and failure mode.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>What's Next?</h2>
+            <p>
+                Now that you understand how to build a neuro-symbolic system, the next chapters show how to apply this approach to specific domains:
+            </p>
+            <ul>
+                <li><strong>Chapter 5:</strong> Healthcare AI - clinical decision support in practice</li>
+                <li><strong>Chapter 6:</strong> Legal AI - contract analysis and case law reasoning</li>
+                <li><strong>Chapter 7:</strong> Insurance AI - fraud detection and risk assessment</li>
+                <li><strong>Chapter 8:</strong> Pharmacy & Drug Discovery - personalized medicine</li>
+            </ul>
+
+            <div class="key-points">
+                <h4>✓ Key Takeaways:</h4>
+                <ul>
+                    <li>Neuro-symbolic systems separate neural perception from symbolic reasoning</li>
+                    <li>This separation makes systems safer, more explainable, and easier to test</li>
+                    <li>Start with a clear architecture diagram before coding</li>
+                    <li>Implement rules as configuration, not hard-coded logic</li>
+                    <li>Test extensively with realistic scenarios</li>
+                    <li>In healthcare and other high-stakes domains, safety is non-negotiable</li>
+                </ul>
+            </div>            <!-- Chapter Quiz -->
+            <div style="background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%); border: 2px solid #1976d2; padding: 25px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="color: #1976d2; font-size: 1.2em; margin-bottom: 10px;">🎯 Ready for Assessment?</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">10 Questions</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">~10 mins</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">70% to Pass</strong></div>
+                    </div>
+                </div>
+                <a href="../Quiz/chapter-04-quiz.html" style="background: #1976d2; color: white; padding: 12px 28px; border-radius: 4px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: 20px; display: inline-block; transition: all 0.3s ease; border: none;">Take Quiz Now →</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>📚 Neuro-Symbolic AI Tutorial | Chapter 4: Building Projects</p>
+            <p>This course was developed using Claude Code. Content is inspired by the Neuro-Symbolic AI course (DATASCI 290) from UC Berkeley's Master of Information and Data Science (MIDS) program, Spring 2026. For questions or feedback, <a href="mailto:kirthi.genai@gmail.com">Email</a> us.</p>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <a href="chapter-03-kg-advanced.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">← Advanced KGs</a>
+                <a href="../index.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 16px; display: inline-block; border-radius: 4px; transition: all 0.3s ease;">🏠 Home</a>
+                <a href="chapter-05-healthcare.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">Healthcare →</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

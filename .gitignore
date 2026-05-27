@@ -1,0 +1,14 @@
+# Backup folders
+backup_*/
+
+# System files
+.DS_Store
+*.zip
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

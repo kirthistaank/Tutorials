@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 10: Production Systems - Neuro-Symbolic AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #555;
+            background: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        header {
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-bottom: 3px solid #1976d2;
+            text-align: center;
+        }
+
+        .chapter-number {
+            display: inline-block;
+            background: white;
+            color: #1976d2;
+            padding: 5px 12px;
+            border-radius: 0;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            border: 1px solid #1976d2;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin: 15px 0 10px 0;
+            color: #333;
+        }
+
+        header p {
+            font-size: 1.1em;
+            color: #999;
+            margin: 10px 0;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 1.8em;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin: 30px 0 15px 0;
+        }
+
+        h3 {
+            color: #555;
+            font-size: 1.3em;
+            margin: 25px 0 15px 0;
+        }
+
+        h4 {
+            color: #1976d2;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            font-size: 1.05em;
+            line-height: 1.8;
+            margin: 15px 0;
+        }
+
+        .highlight-box {
+            border-left: 4px solid #1976d2;
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .highlight-box strong {
+            color: #1976d2;
+        }
+
+        .concept-box {
+            border-left: 4px solid #1976d2;
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .concept-box strong {
+            color: #1976d2;
+        }
+
+        .key-points {
+            border-left: 4px solid #ff9800;
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .key-points h4 {
+            color: #ff9800;
+        }
+
+        .key-points ul {
+            margin-left: 20px;
+        }
+
+        .key-points li {
+            margin: 10px 0;
+        }
+
+        .example-box {
+            border-left: 4px solid #ff9800;
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .example-box h4 {
+            color: #ff9800;
+        }
+
+        .diagram-box {
+            border: 1px solid #e0e0e0;
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border-radius: 0;
+        }
+
+        .diagram-box svg {
+            max-width: 100%;
+            height: auto;
+            display: inline-block;
+        }
+
+        .diagram-label {
+            font-style: italic;
+            color: #666;
+            font-size: 0.95em;
+            margin-top: 10px;
+        }
+
+        .code-block {
+            border-left: 4px solid #1976d2;
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        table.comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        table.comparison-table thead {
+            background: white;
+            border-bottom: 2px solid #1976d2;
+        }
+
+        table.comparison-table th {
+            color: #1976d2;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #1976d2;
+        }
+
+        table.comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        table.comparison-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .nav-button {
+            background: white;
+            color: #1976d2;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: 2px solid #1976d2;
+            border-radius: 0;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-button:hover {
+            background: #1976d2;
+            color: white;
+        }
+
+        footer {
+            background: white;
+            padding: 30px;
+            text-align: center;
+            color: #999;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        .code {
+            background: #f5f5f5;
+            color: #1976d2;
+            padding: 2px 6px;
+            font-family: 'Courier New', monospace;
+            border-radius: 0;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="chapter-number">CHAPTER 10</div>
+            <h1>📋 Production Systems & Rule-Based Reasoning</h1>
+            <p>The Foundation of Symbolic AI Reasoning Engines</p>
+        </header>
+
+        <div class="content">
+            <div class="highlight-box">
+                <strong>Learning Objectives:</strong><br>
+                Understand how production systems work as a reasoning engine, learn to design IF-THEN rules, master pattern matching and conflict resolution, and build practical rule-based systems for decision-making.
+            </div>
+
+            <h2>Introduction: What Are Production Systems?</h2>
+
+            <p>
+                A production system is one of the oldest and most powerful concepts in AI reasoning. It's elegantly simple: a set of IF-THEN rules operating over a working memory, where the system continuously checks which rules apply and executes matching actions.
+            </p>
+
+            <div class="concept-box">
+                <strong>Core Idea:</strong><br>
+                A production system operates in a simple loop:
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Pattern Matching:</strong> Check which rules' conditions match current memory state</li>
+                    <li><strong>Conflict Resolution:</strong> If multiple rules match, decide which one fires first</li>
+                    <li><strong>Action Execution:</strong> Execute the rule's action (modify memory or act in world)</li>
+                    <li><strong>Repeat:</strong> Continue until no more rules can fire</li>
+                </ol>
+            </div>
+
+            <p>
+                This might seem simple, but production systems are <strong>Turing-complete</strong>—they can compute any computable function. And unlike neural networks, every decision is traceable: you can inspect which rules fired and why.
+            </p>
+
+            <h2>Why Production Systems Matter for Neuro-Symbolic AI</h2>
+
+            <div class="diagram-box">
+                <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead-ps" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#1976d2" />
+                        </marker>
+                    </defs>
+
+                    <!-- Left: Neural Weakness -->
+                    <rect x="20" y="30" width="320" height="120" fill="white" stroke="#e74c3c" stroke-width="2" rx="0"/>
+                    <text x="180" y="55" font-size="14" font-weight="bold" text-anchor="middle" fill="#e74c3c">Neural Networks</text>
+                    <text x="30" y="85" font-size="11" fill="#555">✓ Pattern learning</text>
+                    <text x="30" y="105" font-size="11" fill="#555">✓ Flexible, general</text>
+                    <text x="30" y="125" font-size="11" fill="#555">❌ Black box, hard to debug</text>
+                    <text x="30" y="140" font-size="11" fill="#555">❌ Can't enforce hard constraints</text>
+
+                    <!-- Right: Production Systems Strength -->
+                    <rect x="460" y="30" width="320" height="120" fill="white" stroke="#1976d2" stroke-width="2" rx="0"/>
+                    <text x="620" y="55" font-size="14" font-weight="bold" text-anchor="middle" fill="#1976d2">Production Systems</text>
+                    <text x="470" y="85" font-size="11" fill="#555">✓ Transparent, auditable</text>
+                    <text x="470" y="105" font-size="11" fill="#555">✓ Enforce hard rules</text>
+                    <text x="470" y="125" font-size="11" fill="#555">❌ Limited to explicit knowledge</text>
+                    <text x="470" y="140" font-size="11" fill="#555">❌ Need manual rule engineering</text>
+
+                    <!-- Solution -->
+                    <rect x="100" y="200" width="600" height="150" fill="white" stroke="#1976d2" stroke-width="2" rx="0"/>
+                    <text x="400" y="230" font-size="13" font-weight="bold" text-anchor="middle" fill="#1976d2">Neuro-Symbolic: Use Both Together</text>
+                    <text x="400" y="260" font-size="11" text-anchor="middle" fill="#333">Neural: Learn patterns from data</text>
+                    <text x="400" y="280" font-size="11" text-anchor="middle" fill="#333">Symbolic: Enforce rules and constraints</text>
+                    <text x="400" y="310" font-size="11" text-anchor="middle" fill="#555">Example: Use NLP to extract facts, then apply production rules for decision</text>
+                </svg>
+                <p class="diagram-label">Production systems provide the symbolic reasoning backbone for neuro-symbolic AI</p>
+            </div>
+
+            <h2>Anatomy of a Production System</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Rules</strong></td>
+                        <td>IF (condition) THEN (action) statements. Conditions are patterns to match against memory.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Working Memory</strong></td>
+                        <td>Current state of facts/data. Rules match against this. When rules fire, memory updates.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pattern Matcher</strong></td>
+                        <td>Engine that checks which rules' conditions are satisfied by current memory.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Conflict Resolver</strong></td>
+                        <td>When multiple rules match, decides which one fires next (specificity, recency, priority).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inference Engine</strong></td>
+                        <td>The execution loop: match → resolve → fire → update → repeat.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Pattern Matching: The Heart of Production Systems</h2>
+
+            <p>
+                Pattern matching is how the system determines which rules apply. A rule's condition is a pattern that must match facts in working memory.
+            </p>
+
+            <div class="example-box">
+                <h4>Simple Medical Diagnosis Example</h4>
+
+                <p><strong>Working Memory (current facts):</strong></p>
+                <div class="code-block"><pre>
+patient:
+  age: 25
+  symptom_fever: true
+  symptom_cough: true
+  symptom_sore_throat: true
+  duration_days: 3
+  severity: mild
+                </pre></div>
+
+                <p><strong>Rules:</strong></p>
+                <div class="code-block"><pre>
+RULE 1: "Viral URI"
+IF
+  symptom_fever = true
+  AND symptom_cough = true
+  AND severity != severe
+  AND duration_days < 7
+THEN
+  diagnosis = "Viral Upper Respiratory Infection"
+  treatment = "Rest, fluids, supportive care"
+
+RULE 2: "Bacterial Infection"
+IF
+  symptom_sore_throat = true
+  AND symptom_fever = true
+  AND severity = severe
+THEN
+  diagnosis = "Bacterial Pharyngitis"
+  treatment = "Antibiotics required"
+
+RULE 3: "Common Cold"
+IF
+  symptom_cough = true
+  AND duration_days < 5
+  AND fever = false
+THEN
+  diagnosis = "Common Cold"
+  treatment = "Time and TLC"
+                </pre></div>
+
+                <p><strong>Pattern Matching Result:</strong></p>
+                <div class="code-block"><pre>
+Checking RULE 1 against memory:
+  symptom_fever = true ✓
+  symptom_cough = true ✓
+  severity != severe (mild != severe) ✓
+  duration_days < 7 (3 < 7) ✓
+→ RULE 1 MATCHES!
+
+Checking RULE 2:
+  symptom_sore_throat = true ✓
+  symptom_fever = true ✓
+  severity = severe (but memory says 'mild') ✗
+→ RULE 2 DOES NOT MATCH
+
+Checking RULE 3:
+  symptom_cough = true ✓
+  duration_days < 5 (3 < 5) ✓
+  fever = false (but memory says true) ✗
+→ RULE 3 DOES NOT MATCH
+                </pre></div>
+
+                <p><strong>Result:</strong> Only RULE 1 matches. It fires and produces the diagnosis "Viral URI".</p>
+            </div>
+
+            <h2>Conflict Resolution: When Multiple Rules Match</h2>
+
+            <p>
+                What happens when multiple rules match? The conflict resolver decides which rule fires next. Common strategies:
+            </p>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Strategy</th>
+                        <th>How It Works</th>
+                        <th>Pros</th>
+                        <th>Cons</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Specificity</strong></td>
+                        <td>Fire the rule with most conditions (most specific match)</td>
+                        <td>Intuitive, handles edge cases well</td>
+                        <td>Can be unpredictable if not careful</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Recency</strong></td>
+                        <td>Fire the rule that matches the newest facts</td>
+                        <td>Responds to recent events</td>
+                        <td>May miss important standing rules</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Priority</strong></td>
+                        <td>Rules have explicit priority numbers (1=highest)</td>
+                        <td>Explicit, easy to understand and audit</td>
+                        <td>Requires careful design</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lex (Left-to-Right)</strong></td>
+                        <td>Fire the first rule that matches (in order)</td>
+                        <td>Simplest, deterministic</td>
+                        <td>Order-dependent, fragile to reordering</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-box">
+                <h4>Conflict Resolution in Medical Diagnosis</h4>
+
+                <p>Imagine a patient with fever, sore throat, and cough. Multiple rules match:</p>
+                <div class="code-block"><pre>
+RULE A (3 conditions matched):
+  fever AND cough AND sore_throat
+  → Diagnosis: "Viral Pharyngitis"
+
+RULE B (2 conditions matched):
+  fever AND cough
+  → Diagnosis: "Generic Flu"
+
+RULE C (1 condition matched):
+  fever
+  → Diagnosis: "Fever - investigate further"
+
+Using SPECIFICITY strategy:
+→ RULE A fires (3 conditions = most specific)
+→ Output: "Viral Pharyngitis"
+
+Using PRIORITY strategy (if defined):
+RULE A: priority 10
+RULE B: priority 20
+RULE C: priority 30
+→ RULE A fires (10 < 20, so highest priority)
+→ Output: "Viral Pharyngitis"
+                </pre></div>
+            </div>
+
+            <h2>Building Production Systems in Practice</h2>
+
+            <div class="code-block"><pre>
+# Simple Production System in Python
+
+class ProductionSystem:
+    def __init__(self):
+        self.working_memory = {}
+        self.rules = []
+        self.fired_rules = []
+
+    def add_rule(self, name, conditions, actions, priority=0):
+        """Add a rule to the system"""
+        self.rules.append({
+            'name': name,
+            'conditions': conditions,  # List of condition functions
+            'actions': actions,        # List of action functions
+            'priority': priority
+        })
+
+    def pattern_match(self):
+        """Find all rules whose conditions are satisfied"""
+        matching_rules = []
+        for rule in self.rules:
+            # Check if all conditions are true
+            all_satisfied = all(
+                condition(self.working_memory)
+                for condition in rule['conditions']
+            )
+            if all_satisfied:
+                matching_rules.append(rule)
+        return matching_rules
+
+    def resolve_conflict(self, matching_rules):
+        """Choose which rule to fire (by priority)"""
+        if not matching_rules:
+            return None
+        # Sort by priority (lower number = higher priority)
+        return min(matching_rules, key=lambda r: r['priority'])
+
+    def fire_rule(self, rule):
+        """Execute a rule's actions"""
+        for action in rule['actions']:
+            action(self.working_memory)
+        self.fired_rules.append(rule['name'])
+
+    def run(self, max_iterations=100):
+        """Run the production system until no more rules can fire"""
+        iteration = 0
+        while iteration < max_iterations:
+            matching = self.pattern_match()
+            if not matching:
+                break  # No more rules to fire
+
+            rule_to_fire = self.resolve_conflict(matching)
+            self.fire_rule(rule_to_fire)
+            iteration += 1
+
+        return self.fired_rules
+
+
+# Example: Medical Triage System
+triage = ProductionSystem()
+
+# Add rules
+triage.add_rule(
+    "red_flag_check",
+    conditions=[
+        lambda mem: mem.get('symptom_difficulty_breathing') == True,
+        lambda mem: mem.get('severity') in ['severe', 'critical']
+    ],
+    actions=[
+        lambda mem: mem.update({'recommendation': 'GO TO ER IMMEDIATELY'})
+    ],
+    priority=1  # Highest priority
+)
+
+triage.add_rule(
+    "viral_uri",
+    conditions=[
+        lambda mem: mem.get('symptom_fever') == True,
+        lambda mem: mem.get('symptom_cough') == True,
+        lambda mem: mem.get('severity') in ['mild', 'moderate']
+    ],
+    actions=[
+        lambda mem: mem.update({'recommendation': 'Rest, fluids, monitor'})
+    ],
+    priority=5
+)
+
+# Set initial working memory (patient data)
+triage.working_memory = {
+    'symptom_difficulty_breathing': False,
+    'symptom_fever': True,
+    'symptom_cough': True,
+    'severity': 'mild'
+}
+
+# Run the system
+triage.run()
+print(f"Fired rules: {triage.fired_rules}")
+print(f"Recommendation: {triage.working_memory.get('recommendation')}")
+            </pre></div>
+
+            <h2>Production Systems in Neuro-Symbolic Pipelines</h2>
+
+            <p>
+                In a typical neuro-symbolic system, production systems often follow neural perception:
+            </p>
+
+            <div class="diagram-box">
+                <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead-pipe" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#1976d2" />
+                        </marker>
+                    </defs>
+
+                    <!-- Step 1: Neural Input -->
+                    <rect x="20" y="50" width="140" height="80" fill="white" stroke="#ff9800" stroke-width="2" rx="0"/>
+                    <text x="90" y="80" font-size="12" font-weight="bold" text-anchor="middle" fill="#ff9800">Step 1: Neural</text>
+                    <text x="90" y="100" font-size="11" text-anchor="middle" fill="#333">Extract Facts</text>
+                    <text x="90" y="115" font-size="10" text-anchor="middle" fill="#555">NLP, vision, sensor</text>
+
+                    <!-- Arrow -->
+                    <line x1="160" y1="90" x2="210" y2="90" stroke="#1976d2" stroke-width="2" marker-end="url(#arrowhead-pipe)"/>
+
+                    <!-- Step 2: Symbolic Rules -->
+                    <rect x="210" y="50" width="140" height="80" fill="white" stroke="#1976d2" stroke-width="2" rx="0"/>
+                    <text x="280" y="80" font-size="12" font-weight="bold" text-anchor="middle" fill="#1976d2">Step 2: Symbolic</text>
+                    <text x="280" y="100" font-size="11" text-anchor="middle" fill="#333">Apply Rules</text>
+                    <text x="280" y="115" font-size="10" text-anchor="middle" fill="#555">Production system</text>
+
+                    <!-- Arrow -->
+                    <line x1="350" y1="90" x2="400" y2="90" stroke="#1976d2" stroke-width="2" marker-end="url(#arrowhead-pipe)"/>
+
+                    <!-- Step 3: Verification -->
+                    <rect x="400" y="50" width="140" height="80" fill="white" stroke="#9c27b0" stroke-width="2" rx="0"/>
+                    <text x="470" y="80" font-size="12" font-weight="bold" text-anchor="middle" fill="#9c27b0">Step 3: Verify</text>
+                    <text x="470" y="100" font-size="11" text-anchor="middle" fill="#333">Check Constraints</text>
+                    <text x="470" y="115" font-size="10" text-anchor="middle" fill="#555">Safety checks</text>
+
+                    <!-- Arrow -->
+                    <line x1="540" y1="90" x2="590" y2="90" stroke="#1976d2" stroke-width="2" marker-end="url(#arrowhead-pipe)"/>
+
+                    <!-- Step 4: Output -->
+                    <rect x="590" y="50" width="140" height="80" fill="white" stroke="#1976d2" stroke-width="2" rx="0"/>
+                    <text x="660" y="80" font-size="12" font-weight="bold" text-anchor="middle" fill="#1976d2">Step 4: Decision</text>
+                    <text x="660" y="100" font-size="11" text-anchor="middle" fill="#333">Output with</text>
+                    <text x="660" y="115" font-size="10" text-anchor="middle" fill="#555">audit trail</text>
+
+                    <!-- Example flow -->
+                    <text x="400" y="200" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Example Flow:</text>
+                    <text x="400" y="225" font-size="10" text-anchor="middle" fill="#555">"Patient reports difficulty breathing"</text>
+                    <text x="400" y="245" font-size="10" text-anchor="middle" fill="#555">→ Extract(symptom: dyspnea) → Apply(red_flag_rule)</text>
+                    <text x="400" y="265" font-size="10" text-anchor="middle" fill="#555">→ Verify(constraint_check) → Output(GO TO ER)</text>
+                </svg>
+                <p class="diagram-label">Neuro-Symbolic Pipeline: Neural extraction feeds symbolic reasoning</p>
+            </div>
+
+            <div class="key-points">
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li><strong>Production systems</strong> are transparent rule engines: every decision is traceable</li>
+                    <li><strong>Pattern matching</strong> determines which rules apply; rules fire when conditions match</li>
+                    <li><strong>Conflict resolution</strong> handles multiple matching rules—use priority, specificity, or recency</li>
+                    <li><strong>In neuro-symbolic AI</strong>, production systems follow neural perception to enforce logic</li>
+                    <li><strong>Auditable and safe</strong>: hard constraints can be enforced where neural models are uncertain</li>
+                </ul>
+            </div>
+
+            <h2>Further Reading & References</h2>
+
+            <div class="highlight-box">
+                <strong>Foundational Papers:</strong><br>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Newell, A., & Simon, H. A. (1963). "GPS, a program that simulates human thought" — Foundational production system work</li>
+                    <li>Brownston, L., Farrell, R., Kant, E., & Martin, N. (1985). "Programming Expert Systems in OPS5" — Classic production system reference</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Related Topics in This Course:</strong><br>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Chapter 9: Trustworthiness (rules enforce safety)</li>
+                    <li>Chapter 11: Types of Reasoning (rules encode specific reasoning types)</li>
+                    <li>Chapter 12: Datalog (declarative rule language)</li>
+                </ul>
+            </div>            <!-- Chapter Quiz -->
+            <div style="background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%); border: 2px solid #1976d2; padding: 25px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="color: #1976d2; font-size: 1.2em; margin-bottom: 10px;">🎯 Ready for Assessment?</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">10 Questions</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">~10 mins</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">70% to Pass</strong></div>
+                    </div>
+                </div>
+                <a href="../Quiz/chapter-10-quiz.html" style="background: #1976d2; color: white; padding: 12px 28px; border-radius: 4px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: 20px; display: inline-block; transition: all 0.3s ease; border: none;">Take Quiz Now →</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>Neuro-Symbolic AI Tutorial | Chapter 10: Production Systems</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">This course was developed using Claude Code. Content is inspired by the Neuro-Symbolic AI course (DATASCI 290) from UC Berkeley's Master of Information and Data Science (MIDS) program, Spring 2026. For questions or feedback, <a href="mailto:kirthi.genai@gmail.com">Email</a> us.</p>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <a href="chapter-09-trustworthiness.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">← Trustworthiness</a>
+                <a href="../index.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 16px; display: inline-block; border-radius: 4px; transition: all 0.3s ease;">🏠 Home</a>
+                <a href="chapter-11-reasoning-types.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">Reasoning →</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

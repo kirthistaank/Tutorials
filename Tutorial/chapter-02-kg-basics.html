@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Graphs Basics - Neuro-Symbolic AI Tutorial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        header {
+            background: white;
+            color: #333;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 3px solid #1976d2;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        header p {
+            font-size: 1.1em;
+            color: #999;
+        }
+
+        .chapter-number {
+            display: inline-block;
+            background: white;
+            color: #1976d2;
+            padding: 5px 15px;
+            border-radius: 0;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            border: 1px solid #1976d2;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #333;
+            margin: 30px 0 15px 0;
+            font-size: 1.8em;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #555;
+            margin: 25px 0 12px 0;
+            font-size: 1.3em;
+        }
+
+        p {
+            margin: 15px 0;
+            font-size: 1.05em;
+            line-height: 1.8;
+        }
+
+        .concept-box {
+            background: white;
+            border-left: 4px solid #1976d2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+
+        .concept-box strong {
+            color: #1976d2;
+        }
+
+        .example-box {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+
+        .example-box h4 {
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            color: #333;
+            padding: 15px;
+            border-radius: 0;
+            border-left: 4px solid #1976d2;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        svg {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            display: block;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th {
+            background: white;
+            color: #1976d2;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #1976d2;
+        }
+
+        .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .key-points {
+            background: white;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+
+        .key-points h4 {
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+
+        .key-points ul {
+            list-style-position: inside;
+            margin-left: 10px;
+        }
+
+        .key-points li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .nav-button {
+            display: inline-block;
+            background: white;
+            color: #1976d2;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 0;
+            border: 2px solid #1976d2;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-button:hover {
+            background: #1976d2;
+            color: white;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+        }
+
+        .nav-button.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        footer {
+            background: white;
+            padding: 20px 40px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="chapter-number">CHAPTER 2</div>
+            <h1>📊 Knowledge Graphs Basics</h1>
+            <p>Understanding the Foundation of Structured Knowledge</p>
+        </header>
+
+        <div class="content">
+            <h2>What is a Knowledge Graph?</h2>
+            <p>
+                A <strong>Knowledge Graph (KG)</strong> is a way of organizing information so that computers can understand relationships between things. Instead of storing facts in text form, a knowledge graph represents information as a network of connected entities and relationships—similar to how your brain organizes concepts.
+            </p>
+
+            <p>
+                Think of it this way: If you wanted to tell someone about a disease, you could write a paragraph describing symptoms, treatments, and causes. Or, you could draw a diagram showing the disease node connected to symptom nodes, treatment nodes, and cause nodes. A knowledge graph is exactly that—a visual and logical way to connect concepts.
+            </p>
+
+            <div class="concept-box">
+                <strong>Core Idea:</strong> A knowledge graph represents real-world knowledge as a network of entities (nodes) and relationships (edges) that machines can reason over, query, and extend.
+            </div>
+
+            <h2>The Three Components of a Knowledge Graph</h2>
+
+            <h3>1. Entities (Nodes)</h3>
+            <p>
+                Entities are the "things" or "concepts" in your knowledge graph. They represent real-world objects, people, places, or abstract concepts.
+            </p>
+
+            <div class="example-box">
+                <h4>Examples of Entities:</h4>
+                <ul>
+                    <li><strong>In Medicine:</strong> Diseases (Diabetes, Hypertension), Drugs (Metformin, Lisinopril), Symptoms (Chest Pain, Fatigue)</li>
+                    <li><strong>In Law:</strong> Court Cases, Legal Documents, Statutes, Judges, Plaintiffs, Defendants</li>
+                    <li><strong>In Insurance:</strong> Customers, Claims, Risk Factors, Incidents</li>
+                    <li><strong>In General:</strong> People, Companies, Places, Events, Concepts</li>
+                </ul>
+            </div>
+
+            <h3>2. Relationships (Edges)</h3>
+            <p>
+                Relationships describe how entities are connected. They define the nature of the connection between two entities.
+            </p>
+
+            <div class="example-box">
+                <h4>Examples of Relationships:</h4>
+                <ul>
+                    <li><strong>"treats"</strong>: Drug → treats → Disease</li>
+                    <li><strong>"causes"</strong>: Virus → causes → Disease</li>
+                    <li><strong>"hasSymptom"</strong>: Disease → hasSymptom → Symptom</li>
+                    <li><strong>"prescribedFor"</strong>: Doctor → prescribedFor → Patient</li>
+                    <li><strong>"basedOn"</strong>: Case → basedOn → Statute</li>
+                    <li><strong>"detects"</strong>: Test → detects → Disease</li>
+                </ul>
+            </div>
+
+            <h3>3. Attributes (Properties)</h3>
+            <p>
+                Attributes are properties or characteristics of entities. They describe qualities or measurements associated with an entity.
+            </p>
+
+            <div class="example-box">
+                <h4>Examples of Attributes:</h4>
+                <ul>
+                    <li><strong>Disease Attributes:</strong> prevalence, mortality_rate, ICD_code, severity_level</li>
+                    <li><strong>Drug Attributes:</strong> dosage, side_effects, cost, chemical_formula</li>
+                    <li><strong>Patient Attributes:</strong> age, gender, risk_score, medical_history</li>
+                </ul>
+            </div>
+
+            <h2>Visual Example: A Simple Healthcare Knowledge Graph</h2>
+            <p>Here's a simple example of how a knowledge graph looks in a medical context:</p>
+
+            <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                <!-- Define arrow marker -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#667eea" />
+                    </marker>
+                </defs>
+
+                <!-- Nodes (Circles for entities) -->
+                <!-- Diabetes node -->
+                <circle cx="150" cy="150" r="50" fill="#667eea" opacity="0.8"/>
+                <text x="150" y="150" text-anchor="middle" dy="0.3em" fill="white" font-weight="bold" font-size="14">Diabetes</text>
+
+                <!-- Metformin node -->
+                <circle cx="150" cy="300" r="50" fill="#764ba2" opacity="0.8"/>
+                <text x="150" y="305" text-anchor="middle" dy="0.3em" fill="white" font-weight="bold" font-size="12">Metformin</text>
+
+                <!-- Fatigue node -->
+                <circle cx="400" cy="80" r="50" fill="#667eea" opacity="0.8"/>
+                <text x="400" y="80" text-anchor="middle" dy="0.3em" fill="white" font-weight="bold" font-size="14">Fatigue</text>
+
+                <!-- Hypertension node -->
+                <circle cx="400" cy="280" r="50" fill="#667eea" opacity="0.8"/>
+                <text x="400" y="280" text-anchor="middle" dy="0.3em" fill="white" font-weight="bold" font-size="12">Hypertension</text>
+
+                <!-- Chest Pain node -->
+                <circle cx="650" cy="150" r="50" fill="#667eea" opacity="0.8"/>
+                <text x="650" y="150" text-anchor="middle" dy="0.3em" fill="white" font-weight="bold" font-size="12">Chest Pain</text>
+
+                <!-- Edges (Relationships) -->
+                <!-- Diabetes hasSymptom Fatigue -->
+                <line x1="195" y1="130" x2="355" y2="100" stroke="#667eea" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="270" y="100" fill="#667eea" font-size="12" font-weight="bold">hasSymptom</text>
+
+                <!-- Diabetes treats Metformin -->
+                <line x1="150" y1="200" x2="150" y2="250" stroke="#764ba2" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="165" y="230" fill="#764ba2" font-size="12" font-weight="bold">treatedBy</text>
+
+                <!-- Hypertension hasSymptom Chest Pain -->
+                <line x1="445" y1="260" x2="605" y2="170" stroke="#667eea" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="520" y="240" fill="#667eea" font-size="12" font-weight="bold">hasSymptom</text>
+
+                <!-- Diabetes comorbidity Hypertension -->
+                <line x1="200" y1="150" x2="350" y2="250" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+                <text x="270" y="210" fill="#ff6b6b" font-size="12" font-weight="bold">comorbidity</text>
+            </svg>
+
+            <p style="text-align: center; color: #666; font-size: 0.95em;">
+                <em>In this graph: Circles are entities (Diseases, Drugs, Symptoms). Arrows are relationships describing how entities connect.</em>
+            </p>
+
+            <h2>Why Are Knowledge Graphs Useful?</h2>
+
+            <div class="concept-box">
+                <strong>1. Structured Reasoning:</strong> A KG allows computers to answer complex questions by traversing relationships. Example: "What symptoms are associated with Diabetes?" or "What drug treats Hypertension and is safe for patients with kidney disease?"
+            </div>
+
+            <div class="concept-box">
+                <strong>2. Transparency:</strong> Unlike a neural network (a "black box"), a knowledge graph's logic is explicit and interpretable. You can see exactly why a system made a recommendation.
+            </div>
+
+            <div class="concept-box">
+                <strong>3. Safety & Control:</strong> In healthcare, you can enforce hard rules using a KG. Example: "Never recommend Drug X if patient has Condition Y" is a rule that's always enforced.
+            </div>
+
+            <div class="concept-box">
+                <strong>4. Easy Updates:</strong> Adding new knowledge is straightforward—just add new entities and relationships. No need to retrain a neural network.
+            </div>
+
+            <div class="concept-box">
+                <strong>5. Scalability:</strong> Knowledge graphs can represent billions of facts and still allow fast querying and reasoning.
+            </div>
+
+            <h2>Building a Knowledge Graph: Step-by-Step</h2>
+
+            <h3>Step 1: Identify Entities</h3>
+            <p>List all the important concepts or objects in your domain:</p>
+            <div class="example-box">
+                <h4>Healthcare Example:</h4>
+                <p>Diseases, Drugs, Symptoms, Doctors, Patients, Lab Tests, Treatments, Insurance Plans</p>
+            </div>
+
+            <h3>Step 2: Define Relationships</h3>
+            <p>Specify how entities connect:</p>
+            <div class="example-box">
+                <h4>Healthcare Example:</h4>
+                <p>hasSymptom, treatedBy, prescribedFor, causedBy, contraindication, sideEffect, detectedBy</p>
+            </div>
+
+            <h3>Step 3: Extract or Create Data</h3>
+            <p>Populate your graph with actual data:</p>
+            <div class="code-block"><pre>{
+  "entities": [
+    {"id": "D001", "name": "Diabetes", "type": "Disease"},
+    {"id": "S001", "name": "Fatigue", "type": "Symptom"},
+    {"id": "M001", "name": "Metformin", "type": "Drug"}
+  ],
+  "relationships": [
+    {"source": "D001", "target": "S001", "type": "hasSymptom"},
+    {"source": "D001", "target": "M001", "type": "treatedBy"}
+  ]
+}</pre></div>
+
+            <h3>Step 4: Implement the Graph</h3>
+            <p>Store it in a graph database like Neo4j or networkx:</p>
+            <div class="code-block"><pre>from networkx import DiGraph
+
+# Create graph
+kg = DiGraph()
+
+# Add entities
+kg.add_node("Diabetes", type="Disease")
+kg.add_node("Fatigue", type="Symptom")
+kg.add_node("Metformin", type="Drug")
+
+# Add relationships
+kg.add_edge("Diabetes", "Fatigue", relation="hasSymptom")
+kg.add_edge("Diabetes", "Metformin", relation="treatedBy")
+
+# Query: What symptoms does Diabetes have?
+symptoms = [target for source, target, data in kg.out_edges(data=True)
+            if data['relation'] == 'hasSymptom']</pre></div>
+
+            <h2>Knowledge Graphs vs. Other Data Structures</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Relational DB (SQL)</th>
+                        <th>Document DB (JSON)</th>
+                        <th>Knowledge Graph</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Best For</strong></td>
+                        <td>Structured tables, transactions</td>
+                        <td>Nested, flexible data</td>
+                        <td>Complex relationships, reasoning</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Query Relationships</strong></td>
+                        <td>Via joins (slow for deep relationships)</td>
+                        <td>Flatten data (expensive)</td>
+                        <td>Direct traversal (fast)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reasoning</strong></td>
+                        <td>Limited; requires application logic</td>
+                        <td>Limited; requires application logic</td>
+                        <td>Native; built-in inference engines</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Explainability</strong></td>
+                        <td>High (SQL queries are explicit)</td>
+                        <td>Medium (schema is flexible)</td>
+                        <td>Very High (relationships are transparent)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Scalability</strong></td>
+                        <td>Scales well for simple queries</td>
+                        <td>Flexible but can be slow</td>
+                        <td>Optimized for graph queries</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Real-World Applications of Knowledge Graphs</h2>
+
+            <h3>Healthcare</h3>
+            <p>
+                Medical knowledge graphs connect diseases, symptoms, drugs, treatments, and patient records. They enable:
+            </p>
+            <ul>
+                <li>Clinical decision support (what tests to order, what treatments are recommended)</li>
+                <li>Drug interaction checking (is this drug safe with the patient's other medications?)</li>
+                <li>Patient risk stratification (who is at high risk for complications?)</li>
+            </ul>
+
+            <h3>Google Search</h3>
+            <p>
+                Google's Knowledge Graph powers search results. It connects entities like people, places, movies, and organizations so that search can understand intent. Example: When you search "Einstein," Google shows you his biography, related people, his theories, and more—all from the knowledge graph.
+            </p>
+
+            <h3>Social Networks</h3>
+            <p>
+                Facebook and LinkedIn use knowledge graphs to represent people, relationships, companies, and interests. This enables friend recommendations, job suggestions, and targeted advertising.
+            </p>
+
+            <h3>E-Commerce</h3>
+            <p>
+                Amazon and other retailers use knowledge graphs to connect products, categories, attributes, reviews, and customer preferences. This powers recommendations: "Customers who bought X also bought Y."
+            </p>
+
+            <h2>Knowledge Graph Sizes: From Small to Massive</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Scale</th>
+                        <th>Entities</th>
+                        <th>Relationships</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Small</strong></td>
+                        <td>100s–1,000s</td>
+                        <td>1,000s–10,000s</td>
+                        <td>Single hospital's patient records, small clinical trial</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Medium</strong></td>
+                        <td>100,000s–millions</td>
+                        <td>Millions–billions</td>
+                        <td>National drug database, disease classification system</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Large</strong></td>
+                        <td>Billions+</td>
+                        <td>Billions+</td>
+                        <td>Google Knowledge Graph, DBpedia, Wikidata</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Key Concepts to Remember</h2>
+
+            <div class="key-points">
+                <h4>✓ Essential Takeaways:</h4>
+                <ul>
+                    <li><strong>Entities</strong> are the "nouns" (diseases, drugs, people, places)</li>
+                    <li><strong>Relationships</strong> are the "verbs" (treats, causes, contains, manages)</li>
+                    <li><strong>Attributes</strong> are the "adjectives" (severity, cost, efficacy)</li>
+                    <li>KGs are <strong>explicit and interpretable</strong>—you can trace reasoning</li>
+                    <li>KGs are <strong>safe and predictable</strong>—perfect for high-consequence domains like healthcare</li>
+                    <li>KGs scale from thousands to billions of facts</li>
+                    <li>KGs can be queried to answer complex questions about relationships</li>
+                </ul>
+            </div>
+
+            <h2>What's Next?</h2>
+            <p>
+                Now that you understand the basics of knowledge graphs, the next chapter will dive deeper into:
+            </p>
+            <ul>
+                <li>How to query a knowledge graph (SPARQL, Cypher)</li>
+                <li>Knowledge graph embeddings (representing entities as vectors)</li>
+                <li>Inference and reasoning over a knowledge graph</li>
+                <li>Integrating knowledge graphs with neural networks</li>
+            </ul>            <!-- Chapter Quiz -->
+            <div style="background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%); border: 2px solid #1976d2; padding: 25px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="color: #1976d2; font-size: 1.2em; margin-bottom: 10px;">🎯 Ready for Assessment?</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">10 Questions</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">~10 mins</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">70% to Pass</strong></div>
+                    </div>
+                </div>
+                <a href="../Quiz/chapter-02-quiz.html" style="background: #1976d2; color: white; padding: 12px 28px; border-radius: 4px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: 20px; display: inline-block; transition: all 0.3s ease; border: none;">Take Quiz Now →</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>📚 Neuro-Symbolic AI Tutorial | Chapter 2: Knowledge Graphs Basics</p>
+            <p>This course was developed using Claude Code. Content is inspired by the Neuro-Symbolic AI course (DATASCI 290) from UC Berkeley's Master of Information and Data Science (MIDS) program, Spring 2026. For questions or feedback, <a href="mailto:kirthi.genai@gmail.com">Email</a> us.</p>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <a href="chapter-01-introduction.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">← Neuro-Symbolic AI Intro</a>
+                <a href="../index.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 16px; display: inline-block; border-radius: 4px; transition: all 0.3s ease;">🏠 Home</a>
+                <a href="chapter-03-kg-advanced.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">Advanced Knowledge Graphs →</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 15: Chain-of-Thought Prompting - Neuro-Symbolic AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #555; background: #ffffff; min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; }
+        header { background: white; color: #333; padding: 40px; border-bottom: 3px solid #1976d2; text-align: center; }
+        .chapter-number { display: inline-block; background: white; color: #1976d2; padding: 5px 12px; border-radius: 0; font-size: 0.85em; margin-bottom: 10px; font-weight: bold; border: 1px solid #1976d2; }
+        header h1 { font-size: 2.5em; margin: 15px 0 10px 0; color: #333; }
+        header p { font-size: 1.1em; color: #999; margin: 10px 0; }
+        .content { padding: 40px; }
+        h2 { color: #333; font-size: 1.8em; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin: 30px 0 15px 0; }
+        h3 { color: #555; font-size: 1.3em; margin: 25px 0 15px 0; }
+        h4 { color: #1976d2; font-size: 1.1em; margin: 20px 0 10px 0; }
+        p { font-size: 1.05em; line-height: 1.8; margin: 15px 0; }
+        .highlight-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .highlight-box strong { color: #1976d2; }
+        .concept-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .concept-box strong { color: #1976d2; }
+        .key-points { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .key-points h4 { color: #ff9800; }
+        .key-points ul { margin-left: 20px; }
+        .key-points li { margin: 10px 0; }
+        .example-box { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .example-box h4 { color: #ff9800; }
+        .code-block { border-left: 4px solid #1976d2; background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; font-family: 'Courier New', monospace; font-size: 0.95em; overflow-x: auto; }
+        .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+        .diagram-box { border: 1px solid #e0e0e0; background: white; padding: 20px; margin: 20px 0; text-align: center; border-radius: 0; }
+        .diagram-box svg { max-width: 100%; height: auto; display: inline-block; }
+        .diagram-label { font-style: italic; color: #666; font-size: 0.95em; margin-top: 10px; }
+        table { width: 100%; margin: 20px 0; border-collapse: collapse; }
+        th { color: #1976d2; padding: 15px; text-align: left; font-weight: bold; border-bottom: 2px solid #1976d2; }
+        td { padding: 15px; border-bottom: 1px solid #e0e0e0; }
+        tr:hover { background: #f9f9f9; }
+        .navigation { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0e0e0; }
+        .nav-button { background: white; color: #1976d2; padding: 10px 20px; text-decoration: none; border: 2px solid #1976d2; border-radius: 0; transition: all 0.3s ease; font-weight: 500; cursor: pointer; }
+        .nav-button:hover { background: #1976d2; color: white; }
+        footer { background: white; padding: 30px; text-align: center; color: #999; border-top: 1px solid #e0e0e0; font-size: 0.9em; }
+        @media (max-width: 768px) { header h1 { font-size: 1.8em; } .content { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="chapter-number">CHAPTER 15</div>
+            <h1>⛓️ Chain-of-Thought Prompting</h1>
+            <p>Making LLMs Show Their Reasoning Step-by-Step</p>
+        </header>
+
+        <div class="content">
+            <div class="highlight-box">
+                <strong>Learning Objectives:</strong><br>
+                Understand how prompting LLMs to show reasoning steps dramatically improves accuracy. Learn the difference between few-shot and zero-shot CoT, implement CoT in medical diagnosis, and understand why it works.
+            </div>
+
+            <h2>Original Paper</h2>
+
+            <div class="highlight-box">
+                <strong>Citation:</strong><br>
+                Wei, J., Wang, X., Schuurmans, D., Bosma, M., Ichter, B., Xia, F., Chi, E., Le, Q. V., & Zhou, D. (2022). "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models." In <em>Advances in Neural Information Processing Systems (NeurIPS)</em> 2022.<br>
+                <br>
+                <strong>ArXiv:</strong> <a href="https://arxiv.org/abs/2201.11903" target="_blank">https://arxiv.org/abs/2201.11903</a><br>
+                <strong>Venue:</strong> NeurIPS 2022<br>
+                <strong>Authors:</strong> Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichien, Fei Xia, Ed Chi, Quoc V. Le, Denny Zhou
+            </div>
+
+            <h2>What is Chain-of-Thought Prompting?</h2>
+
+            <p>
+                Chain-of-Thought (CoT) prompting is a technique where you ask an LLM to show its reasoning in intermediate steps before arriving at a final answer. Instead of jumping directly to the answer, the model explains its thinking.
+            </p>
+
+            <div class="concept-box">
+                <strong>Core Insight (Wei et al., 2022):</strong><br>
+                "Prompting the model to generate a chain of thought — a series of short thoughts that lead to the final answer — significantly improves performance on complex reasoning tasks."<br>
+                <br>
+                The hypothesis: By forcing intermediate outputs, we constrain the LLM to engage in valid reasoning rather than pattern-matching shortcuts.
+            </div>
+
+            <h2>The Paper's Key Findings (Figure 1 Recreation)</h2>
+
+            <div class="diagram-box">
+                <svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead-cot" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#1976d2" />
+                        </marker>
+                    </defs>
+
+                    <!-- LEFT: Standard Prompting -->
+                    <rect x="10" y="20" width="400" height="350" fill="white" stroke="#e0e0e0" stroke-width="2" rx="0"/>
+                    <text x="210" y="45" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Standard Prompting</text>
+                    <text x="210" y="70" font-size="11" text-anchor="middle" fill="#666">(No intermediate steps)</text>
+
+                    <!-- Problem -->
+                    <rect x="30" y="90" width="360" height="60" fill="#f5f5f5" stroke="#ddd" rx="0"/>
+                    <text x="40" y="110" font-size="10" fill="#333">Q: If there are 3 cars in the parking lot and 2 more cars arrive, how many cars are in the lot?</text>
+
+                    <!-- Arrow -->
+                    <line x1="210" y1="150" x2="210" y2="170" stroke="#1976d2" stroke-width="2" marker-end="url(#arrowhead-cot)"/>
+
+                    <!-- Direct answer -->
+                    <rect x="30" y="170" width="360" height="60" fill="#fff3cd" stroke="#ffc107" rx="0"/>
+                    <text x="40" y="190" font-size="10" fill="#333">A: There are 5 cars in the parking lot.</text>
+                    <text x="40" y="210" font-size="9" fill="#999">(Direct jump to answer, no reasoning shown)</text>
+
+                    <!-- Problem: sometimes wrong -->
+                    <rect x="30" y="250" width="360" height="80" fill="#ffebee" stroke="#f44336" rx="0"/>
+                    <text x="40" y="270" font-size="10" fill="#d32f2f">❌ For complex problems, this fails:</text>
+                    <text x="40" y="290" font-size="9" fill="#333">Q: Roger has 5 apples. He gives 2 to Alice and 3 to Bob. How many does he have left? How many does Alice have?</text>
+                    <text x="40" y="310" font-size="9" fill="#d32f2f">A: (Hallucination or wrong answer)</text>
+
+                    <!-- RIGHT: Chain-of-Thought -->
+                    <rect x="470" y="20" width="400" height="350" fill="white" stroke="#1976d2" stroke-width="2" rx="0"/>
+                    <text x="670" y="45" font-size="14" font-weight="bold" text-anchor="middle" fill="#1976d2">Chain-of-Thought Prompting</text>
+                    <text x="670" y="70" font-size="11" text-anchor="middle" fill="#666">(Show intermediate steps)</text>
+
+                    <!-- Problem -->
+                    <rect x="490" y="90" width="360" height="60" fill="#f5f5f5" stroke="#ddd" rx="0"/>
+                    <text x="500" y="110" font-size="10" fill="#333">Q: If there are 3 cars in the parking lot and 2 more cars arrive, how many cars are in the lot?</text>
+
+                    <!-- Arrow -->
+                    <line x1="670" y1="150" x2="670" y2="170" stroke="#1976d2" stroke-width="2" marker-end="url(#arrowhead-cot)"/>
+
+                    <!-- Step-by-step reasoning -->
+                    <rect x="490" y="170" width="360" height="130" fill="#e3f2fd" stroke="#1976d2" rx="0"/>
+                    <text x="500" y="190" font-size="10" font-weight="bold" fill="#1976d2">Step 1:</text>
+                    <text x="510" y="205" font-size="9" fill="#333">There are initially 3 cars</text>
+                    <text x="500" y="220" font-size="10" font-weight="bold" fill="#1976d2">Step 2:</text>
+                    <text x="510" y="235" font-size="9" fill="#333">2 more cars arrive</text>
+                    <text x="500" y="250" font-size="10" font-weight="bold" fill="#1976d2">Step 3:</text>
+                    <text x="510" y="265" font-size="9" fill="#333">Total: 3 + 2 = 5 cars</text>
+                    <text x="500" y="285" font-size="9" fill="#666"><em>Therefore: 5 cars</em></text>
+
+                    <!-- Result -->
+                    <rect x="490" y="310" width="360" height="60" fill="#c8e6c9" stroke="#4caf50" rx="0"/>
+                    <text x="500" y="330" font-size="10" font-weight="bold" fill="#2e7d32">✓ Correct answer with reasoning!</text>
+                    <text x="500" y="350" font-size="9" fill="#333">Transparency enables verification</text>
+                </svg>
+                <p class="diagram-label">Figure 1 (Wei et al., 2022): Standard prompting vs Chain-of-Thought prompting</p>
+            </div>
+
+            <h2>Few-Shot vs Zero-Shot CoT</h2>
+
+            <p>
+                Wei et al. showed two approaches:
+            </p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>How It Works</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Few-Shot CoT</strong></td>
+                        <td>Provide examples with reasoning steps, then ask question</td>
+                        <td>Show 2-3 examples with step-by-step solutions, then ask new problem</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zero-Shot CoT</strong></td>
+                        <td>Just add "Let's think step by step" to any question</td>
+                        <td>No examples needed; simple magic phrase works!</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Zero-Shot CoT: "Let's Think Step by Step"</h2>
+
+            <p>
+                One of the most surprising findings: simply adding "Let's think step by step" to a prompt dramatically improves accuracy, even without examples.
+            </p>
+
+            <div class="example-box">
+                <h4>Medical Diagnosis Example</h4>
+
+                <p><strong>WITHOUT CoT prompt:</strong></p>
+                <div class="code-block"><pre>
+Prompt: "Patient: 65-year-old with chest pain, shortness of breath, and history of diabetes.
+What is the most likely diagnosis?"
+
+Response: "Likely diagnosis is a heart attack."
+
+❌ Problem: No reasoning shown, could be wrong, hard to verify
+                </pre></div>
+
+                <p><strong>WITH Zero-Shot CoT (just add one sentence):</strong></p>
+                <div class="code-block"><pre>
+Prompt: "Patient: 65-year-old with chest pain, shortness of breath, and history of diabetes.
+What is the most likely diagnosis?
+
+Let's think step by step:"
+
+Response:
+"Step 1: The patient has chest pain and shortness of breath.
+These are classic symptoms of acute coronary syndrome.
+
+Step 2: The patient has a history of diabetes.
+This is a major risk factor for heart disease.
+
+Step 3: Age is 65 (middle-aged).
+This increases risk for MI.
+
+Step 4: Considering all factors...
+The most likely diagnosis is an acute myocardial infarction (heart attack).
+
+However, we should also rule out:
+- Pulmonary embolism (less likely without leg symptoms)
+- Pneumonia (less likely without fever/cough)
+- Aortic dissection (possible but less common)
+
+Conclusion: Most likely = MI, but immediate ECG and troponin needed."
+
+✓ Much better: reasoning is transparent, verifiable, more accurate
+                </pre></div>
+            </div>
+
+            <h2>Why Chain-of-Thought Works</h2>
+
+            <p>
+                According to Wei et al. (2022), CoT works because:
+            </p>
+
+            <ul style="margin-left: 20px; margin: 15px 0;">
+                <li><strong>Decomposition:</strong> Breaking complex problems into steps makes them easier to solve</li>
+                <li><strong>Constrains reasoning:</strong> Intermediate outputs force valid reasoning, not shortcuts</li>
+                <li><strong>Detects errors:</strong> Readers can spot mistakes in reasoning steps</li>
+                <li><strong>Interpretability:</strong> We can see how the model arrived at conclusions</li>
+                <li><strong>Compositionality:</strong> Combining simpler steps is easier than solving all at once</li>
+            </ul>
+
+            <h2>Performance Improvements (From Paper)</h2>
+
+            <p>
+                Wei et al. showed massive improvements on complex reasoning benchmarks:
+            </p>
+
+            <div class="example-box">
+                <h4>Results from Wei et al. (2022)</h4>
+
+                <table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+                    <tr style="border-bottom: 2px solid #1976d2;">
+                        <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">Task (Benchmark)</th>
+                        <th style="padding: 15px; text-align: center; color: #1976d2; font-weight: bold;">Without CoT</th>
+                        <th style="padding: 15px; text-align: center; color: #1976d2; font-weight: bold;">With CoT</th>
+                        <th style="padding: 15px; text-align: center; color: #1976d2; font-weight: bold;">Improvement</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 15px;">Arithmetic (GSM8K)</td>
+                        <td style="padding: 15px; text-align: center;">58.1%</td>
+                        <td style="padding: 15px; text-align: center;">90.9%</td>
+                        <td style="padding: 15px; text-align: center;">+32.8% ⬆️</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 15px;">Common sense (CSQA)</td>
+                        <td style="padding: 15px; text-align: center;">88.9%</td>
+                        <td style="padding: 15px; text-align: center;">94.6%</td>
+                        <td style="padding: 15px; text-align: center;">+5.7% ⬆️</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 15px;">Symbol manipulation (SVAMP)</td>
+                        <td style="padding: 15px; text-align: center;">79.3%</td>
+                        <td style="padding: 15px; text-align: center;">94.3%</td>
+                        <td style="padding: 15px; text-align: center;">+15.0% ⬆️</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h2>When CoT Helps (and When It Doesn't)</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task Type</th>
+                        <th>CoT Helps?</th>
+                        <th>Why</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Multi-step math problems</td>
+                        <td>✓ YES - Huge improvement</td>
+                        <td>Breaking into steps reveals structure</td>
+                    </tr>
+                    <tr>
+                        <td>Reasoning/inference</td>
+                        <td>✓ YES - Moderate improvement</td>
+                        <td>Makes logical steps explicit</td>
+                    </tr>
+                    <tr>
+                        <td>Factual recall (who won the Nobel Prize?)</td>
+                        <td>✗ NO - Minimal help</td>
+                        <td>Doesn't require reasoning, just memory</td>
+                    </tr>
+                    <tr>
+                        <td>Classification (sentiment)</td>
+                        <td>✓ SOMETIMES - Minor improvement</td>
+                        <td>Can help for edge cases, but simple tasks don't need it</td>
+                    </tr>
+                    <tr>
+                        <td>Medical diagnosis</td>
+                        <td>✓ YES - Very helpful</td>
+                        <td>Transparent reasoning critical for trust</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Implementation: CoT in Medical AI</h2>
+
+            <div class="code-block"><pre>
+# Simple CoT implementation with Claude API
+from anthropic import Anthropic
+
+client = Anthropic()
+
+def medical_diagnosis_with_cot(symptoms, medical_history):
+    """Diagnose using Chain-of-Thought reasoning"""
+
+    prompt = f"""
+You are an experienced clinician analyzing a patient case.
+
+Patient Information:
+- Symptoms: {symptoms}
+- Medical History: {medical_history}
+
+Please diagnose this patient. Think step by step:
+
+Step 1: Identify the key symptoms
+Step 2: Consider differential diagnoses
+Step 3: Evaluate risk factors
+Step 4: Consider the most likely diagnosis
+Step 5: What tests would you order?
+Step 6: What is your final diagnosis and reasoning?
+
+Take your time and reason through this carefully."""
+
+    response = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=1024,
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    return response.content[0].text
+
+
+# Example usage
+symptoms = "Fever 101.5F, cough for 3 days, sore throat, no difficulty breathing"
+history = "65-year-old, diabetic, hypertensive, smoker"
+
+diagnosis = medical_diagnosis_with_cot(symptoms, history)
+print(diagnosis)
+
+# Output will show step-by-step reasoning, making it auditable and trustworthy
+            </pre></div>
+
+            <h2>Limitations and Failure Modes</h2>
+
+            <div class="concept-box">
+                <strong>CoT Can Still Fail When:</strong><br>
+                • LLM lacks knowledge (reasoning steps don't help if you don't know the facts)<br>
+                • Too many steps lead to drift (model forgets earlier reasoning)<br>
+                • Complex multi-constraint problems confuse the step decomposition<br>
+                • Domain requires expert knowledge steps can't express
+            </div>
+
+            <div class="key-points">
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li><strong>Chain-of-Thought prompting</strong> = ask LLM to show reasoning steps before answering</li>
+                    <li><strong>Zero-Shot CoT</strong> = just add "Let's think step by step" (no examples needed!)</li>
+                    <li><strong>Huge improvements</strong> on math and complex reasoning (30%+ accuracy gains in paper)</li>
+                    <li><strong>Makes outputs auditable</strong> — you can verify the reasoning, not just the answer</li>
+                    <li><strong>Critical for medical AI</strong> — transparency builds trust</li>
+                    <li><strong>Doesn't help on simple tasks</strong> — only use CoT where multi-step reasoning is needed</li>
+                </ul>
+            </div>
+
+            <h2>Further Reading</h2>
+
+            <div class="highlight-box">
+                <strong>Original Paper:</strong><br>
+                Wei, J., Wang, X., Schuurmans, D., Bosma, M., Ichter, B., Xia, F., Chi, E., Le, Q. V., & Zhou, D. (2022). "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models." <em>NeurIPS 2022</em>.<br>
+                <a href="https://arxiv.org/abs/2201.11903" target="_blank">Available on ArXiv: https://arxiv.org/abs/2201.11903</a>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Related Work (Build on CoT):</strong><br>
+                • Tree-of-Thought (Yao et al., 2023): Explore multiple reasoning paths<br>
+                • Graph-of-Logic (Alotaibi et al., 2024): Structure reasoning as explicit graph<br>
+                • Self-Consistency (Wang et al., 2022): Generate multiple CoT paths and take majority
+            </div>            <!-- Chapter Quiz -->
+            <div style="background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%); border: 2px solid #1976d2; padding: 25px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="color: #1976d2; font-size: 1.2em; margin-bottom: 10px;">🎯 Ready for Assessment?</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">10 Questions</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">~10 mins</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">70% to Pass</strong></div>
+                    </div>
+                </div>
+                <a href="../Quiz/chapter-15-quiz.html" style="background: #1976d2; color: white; padding: 12px 28px; border-radius: 4px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: 20px; display: inline-block; transition: all 0.3s ease; border: none;">Take Quiz Now →</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>Neuro-Symbolic AI Tutorial | Chapter 15: Chain-of-Thought Prompting</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">Inspired by Wei et al. (2022) and DATASCI 290 Course Material</p>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <a href="chapter-14-lifting-lowering.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">← Lifting-Lowering</a>
+                <a href="../index.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 16px; display: inline-block; border-radius: 4px; transition: all 0.3s ease;">🏠 Home</a>
+                <a href="chapter-16-chain-of-verification.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">CoVe →</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

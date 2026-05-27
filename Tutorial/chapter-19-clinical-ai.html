@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 19: Clinical AI & Computable Logic - Neuro-Symbolic AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #555; background: #ffffff; min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; }
+        header { background: white; color: #333; padding: 40px; border-bottom: 3px solid #1976d2; text-align: center; }
+        .chapter-number { display: inline-block; background: white; color: #1976d2; padding: 5px 12px; border-radius: 0; font-size: 0.85em; margin-bottom: 10px; font-weight: bold; border: 1px solid #1976d2; }
+        header h1 { font-size: 2.5em; margin: 15px 0 10px 0; color: #333; }
+        header p { font-size: 1.1em; color: #999; margin: 10px 0; }
+        .content { padding: 40px; }
+        h2 { color: #333; font-size: 1.8em; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin: 30px 0 15px 0; }
+        h3 { color: #555; font-size: 1.3em; margin: 25px 0 15px 0; }
+        h4 { color: #1976d2; font-size: 1.1em; margin: 20px 0 10px 0; }
+        p { font-size: 1.05em; line-height: 1.8; margin: 15px 0; }
+        .highlight-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .highlight-box strong { color: #1976d2; }
+        .concept-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .concept-box strong { color: #1976d2; }
+        .key-points { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .key-points h4 { color: #ff9800; }
+        .key-points ul { margin-left: 20px; }
+        .key-points li { margin: 10px 0; }
+        .example-box { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .example-box h4 { color: #ff9800; }
+        .code-block { border-left: 4px solid #1976d2; background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; font-family: 'Courier New', monospace; font-size: 0.95em; overflow-x: auto; }
+        .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+        .navigation { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0e0e0; }
+        .nav-button { background: white; color: #1976d2; padding: 10px 20px; text-decoration: none; border: 2px solid #1976d2; border-radius: 0; transition: all 0.3s ease; font-weight: 500; cursor: pointer; }
+        .nav-button:hover { background: #1976d2; color: white; }
+        footer { background: white; padding: 30px; text-align: center; color: #999; border-top: 1px solid #e0e0e0; font-size: 0.9em; }
+        @media (max-width: 768px) { header h1 { font-size: 1.8em; } .content { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="chapter-number">CHAPTER 19</div>
+            <h1>🏥 Clinical AI & Computable Decision Logic</h1>
+            <p>From Guidelines to Executable Logic, Red Flags to Verification</p>
+        </header>
+
+        <div class="content">
+            <div class="highlight-box">
+                <strong>Learning Objectives:</strong><br>
+                Learn to transform clinical practice guidelines into computable logic, implement red flag detection, evaluate reasoning behavior in medical AI, and build verification systems for safe clinical decision support.
+            </div>
+
+            <h2>From Clinical Guidelines to Computable Logic</h2>
+
+            <p>
+                Clinical Practice Guidelines (CPGs) are evidence-based recommendations that standardize decision-making. The challenge: they're written in prose for humans. To build trustworthy AI, we must make them executable.
+            </p>
+
+            <div class="example-box">
+                <h4>Example: Sepsis Guideline → Computable Logic</h4>
+
+                <p><strong>Natural Language Guideline (Surviving Sepsis Campaign):</strong></p>
+                <div class="code-block"><pre>
+"Sepsis is a life-threatening condition caused by a dysregulated host response to infection.
+Clinicians should recognize early signs: fever or hypothermia, tachycardia, tachypnea,
+evidence of infection (positive culture, localizing signs). Immediate interventions include:
+antibiotics (within 1 hour), IV fluids (30 mL/kg), vasopressors if hypotensive after fluids,
+and investigation of infection source. Lactate >2 mmol/L indicates tissue hypoperfusion."
+                </pre></div>
+
+                <p><strong>Computable Logic (IF-THEN rules):</strong></p>
+                <div class="code-block"><pre>
+# RULE 1: Recognize Early Sepsis (≥2 of these + evidence of infection)
+IF (
+    (temp < 36 OR temp > 38.3) OR
+    (heart_rate > 90) OR
+    (respiratory_rate > 20)
+) AND
+(blood_culture_positive OR
+ imaging_shows_infection OR
+ localizing_signs_present)
+THEN diagnosis = "SEPSIS"
+
+# RULE 2: RED FLAG - Severe Sepsis
+IF diagnosis = "SEPSIS" AND (
+    (systolic_BP < 90) OR
+    (lactate > 2) OR
+    (urine_output < 0.5 mL/kg/hr) OR
+    (altered_mental_status)
+)
+THEN severity = "SEVERE"
+      recommendation = "🚨 ICU admission required"
+
+# RULE 3: Immediate Interventions
+IF diagnosis = "SEPSIS"
+THEN
+    action1: "Antibiotics WITHIN 1 HOUR"
+    action2: "IV fluid bolus: 30 mL/kg"
+    action3: "Obtain blood cultures before antibiotics"
+    action4: "Investigate infection source (imaging, etc.)"
+    action5: "IF severe: add vasopressor (target MAP ≥ 65)"
+
+# RULE 4: Timing is Critical
+IF diagnosis = "SEPSIS" AND time_since_onset > 3_hours AND
+   no_antibiotics_yet
+THEN escalate = TRUE
+      notify_physician_urgently = TRUE
+      confidence_in_decision = 0.5  # Delayed treatment reduces confidence
+                </pre></div>
+            </div>
+
+            <h2>Building Decision Support Systems</h2>
+
+            <div class="example-box">
+                <h4>CareTrace Architecture: End-to-End Clinical AI</h4>
+
+                <p><strong>The system receives:</strong> Patient symptoms (natural language)</p>
+                <p><strong>The system outputs:</strong> Actionable plan with clear escalation criteria</p>
+
+                <div class="code-block"><pre>
+# STEP 1: Input (Natural Language)
+patient_report = """
+Child: 18 months old
+Symptoms: Fever 101.5F for 2 days, mild cough, no difficulty breathing
+Activity: Playful, alert
+Prior: No serious illnesses, up-to-date vaccines
+                </pre></div>
+
+                <p><strong>→ STEP 2: Lifting (Neural + Extraction)</strong></p>
+                <div class="code-block"><pre>
+extracted_facts = {
+    'age': '18 months',
+    'symptom_fever': True,
+    'fever_temp': 101.5,
+    'symptom_cough': True,
+    'symptom_dyspnea': False,
+    'mental_status': 'alert',
+    'activity': 'playful',
+    'risk_factors': []
+}
+                </pre></div>
+
+                <p><strong>→ STEP 3: Red Flag Detection (Safety Layer)</strong></p>
+                <div class="code-block"><pre>
+RED_FLAGS = {
+    'respiratory_distress': False,
+    'lethargy': False,
+    'cyanosis': False,
+    'severe_dehydration': False,
+    'rash': False,
+    'seizure': False
+}
+
+# ALL RED FLAGS NEGATIVE → No emergency escalation
+confidence_in_low_severity = 0.95
+                </pre></div>
+
+                <p><strong>→ STEP 4: Reasoning (Production System)</strong></p>
+                <div class="code-block"><pre>
+# Apply clinical guidelines as rules
+IF fever AND cough AND no_dyspnea AND alert AND playful
+THEN diagnosis_likely = "viral_upper_respiratory"
+     severity = "mild"
+
+IF age < 3_years AND fever AND alert
+THEN consider = "febrile_seizure_risk"
+     recommendation = "educate_parent_on_fever_management"
+
+IF no_red_flags AND mild_illness_presentation
+THEN disposition = "home_care"
+     safety_plan = "monitor_for_48_hours"
+                </pre></div>
+
+                <p><strong>→ STEP 5: Verification (Constraint Checking)</strong></p>
+                <div class="code-block"><pre>
+# Before outputting decision, verify:
+verify_checklist = {
+    'all_red_flags_checked': True,
+    'age_appropriate_reasoning': True,
+    'guideline_applied': True,
+    'escalation_criteria_met': False,
+    'confidence_high_enough': True  # 0.95 > threshold of 0.70
+}
+
+if all(verify_checklist.values()):
+    decision_ready = True
+else:
+    escalate_to_physician = True
+                </pre></div>
+
+                <p><strong>→ STEP 6: Output (Actionable Plan)</strong></p>
+                <div class="code-block"><pre>
+RECOMMENDATION FOR TONIGHT:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ Most likely: Viral fever with cough
+
+TONIGHT'S PLAN:
+1. Monitor fever (acetaminophen or ibuprofen for comfort)
+2. Ensure adequate hydration
+3. Watch for respiratory distress (rapid/labored breathing)
+4. Keep environment cool (reduce fever risk)
+
+🚨 GO TO ER IMMEDIATELY IF:
+• Difficulty breathing
+• Difficulty staying awake or unusual behavior
+• Purple or blue spots on skin
+• Difficulty swallowing or drooling
+
+📋 CALL DOCTOR IF:
+• Fever > 104F
+• Fever lasts > 5 days
+• Appears much worse
+• You're very concerned
+
+Confidence: HIGH (0.95)
+This recommendation based on: mild symptoms + no red flags + alert behavior
+Time-sensitive: No urgency based on current presentation
+                </pre></div>
+            </div>
+
+            <h2>Evaluating Reasoning in Medical AI</h2>
+
+            <p>
+                How do we know if a medical AI's reasoning is sound? We evaluate four dimensions:
+            </p>
+
+            <table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+                <tr style="border-bottom: 2px solid #1976d2;">
+                    <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">Dimension</th>
+                    <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">What We Measure</th>
+                    <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">Example</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Consistency</strong></td>
+                    <td style="padding: 15px;">Same input → Same output (repeatability)</td>
+                    <td style="padding: 15px;">Presenting same symptoms multiple times yields same diagnosis</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Reliability</strong></td>
+                    <td style="padding: 15px;">Correct answers on test cases</td>
+                    <td style="padding: 15px;">80% accuracy on 500 test cases from clinical dataset</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Explainability</strong></td>
+                    <td style="padding: 15px;">Can we trace reasoning to rules/data?</td>
+                    <td style="padding: 15px;">"Diagnosis X because: symptom A matched rule 3, symptom B matched rule 3"</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Safety</strong></td>
+                    <td style="padding: 15px;">Red flags caught, escalation works, no critical misses</td>
+                    <td style="padding: 15px;">100% of severe cases escalated to physician; zero missed red flags</td>
+                </tr>
+            </table>
+
+            <h2>Red Flag Detection: The Safety Net</h2>
+
+            <div class="concept-box">
+                <strong>Definition:</strong><br>
+                Red flags are critical indicators that override all other reasoning and demand immediate escalation. In medicine, missing a red flag can mean patient harm.
+            </div>
+
+            <div class="example-box">
+                <h4>Red Flags in Pediatric Fever Assessment</h4>
+
+                <div class="code-block"><pre>
+# CRITICAL RED FLAGS - if ANY are present, escalate immediately
+CRITICAL_RED_FLAGS = [
+    'difficulty_breathing',
+    'severe_distress',
+    'unresponsiveness_or_severe_lethargy',
+    'signs_of_meningitis',  # stiff neck, rash, sensitivity to light
+    'seizure',
+    'cyanosis',
+    'severe_dehydration',
+    'altered_mental_status'
+]
+
+# IMPORTANT RED FLAGS - warrant urgent evaluation
+IMPORTANT_RED_FLAGS = [
+    'age < 3_months AND fever',  # Neonates have different threshold
+    'fever > 40C (104F)',
+    'fever > 7_days_duration',
+    'cannot_tolerate_fluids',
+    'appears_very_sick'
+]
+
+# Implementation:
+def assess_fever(patient):
+    # CHECK CRITICAL FIRST
+    for flag in CRITICAL_RED_FLAGS:
+        if patient[flag]:
+            return {
+                'action': '🚨 GO TO ER IMMEDIATELY',
+                'reason': f'RED FLAG DETECTED: {flag}',
+                'confidence': 1.0
+            }
+
+    # Then check important
+    for flag in IMPORTANT_RED_FLAGS:
+        if patient[flag]:
+            return {
+                'action': '📞 CALL DOCTOR NOW',
+                'reason': f'IMPORTANT FLAG: {flag}',
+                'confidence': 1.0
+            }
+
+    # Only after red flags checked, proceed with normal reasoning
+    return routine_assessment(patient)
+                </pre></div>
+            </div>
+
+            <h2>Chain-of-Verification in Medical AI</h2>
+
+            <p>
+                Medical AI should explicitly verify its decisions against safety constraints before output.
+            </p>
+
+            <div class="code-block"><pre>
+# Medical Decision Verification Checklist
+verification = {
+    'patient_allergies_checked': check_allergies(),
+    'drug_interactions_verified': check_interactions(),
+    'contraindications_excluded': check_contraindications(),
+    'dosing_age_appropriate': check_age_dosing(),
+    'red_flags_not_missed': check_red_flags(),
+    'emergency_criteria_met': check_emergency_criteria(),
+    'follow_up_plan_clear': check_followup(),
+    'escalation_criteria_explicit': check_escalation()
+}
+
+# Only output if ALL verification checks pass
+if all(verification.values()):
+    output_recommendation()
+else:
+    # If any check fails:
+    failed_checks = [k for k, v in verification.items() if not v]
+    escalate_to_physician(reason=failed_checks)
+            </pre></div>
+
+            <div class="key-points">
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li><strong>Clinical guidelines</strong> must be converted to computable logic (rules)</li>
+                    <li><strong>Red flag detection</strong> is the safety net: critical conditions override all other reasoning</li>
+                    <li><strong>Reasoning evaluation</strong> requires 4 dimensions: consistency, reliability, explainability, safety</li>
+                    <li><strong>Chain-of-verification</strong> checks decisions against safety constraints</li>
+                    <li><strong>Escalation criteria</strong> must be explicit: when to alert human experts</li>
+                    <li><strong>Trust in medical AI</strong> comes from transparent reasoning + proven safety record</li>
+                </ul>
+            </div>
+
+            <h2>Conclusion: You've Learned Neuro-Symbolic AI!</h2>
+
+            <div class="highlight-box">
+                <strong>What You've Mastered:</strong><br>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Ch 1-4: Foundations and practical projects</li>
+                    <li>Ch 5-8: Real-world applications (healthcare, legal, insurance, pharmacy)</li>
+                    <li>Ch 9-10: Trustworthiness and rule-based reasoning</li>
+                    <li>Ch 11-12: Types of reasoning and logic programming</li>
+                    <li>Ch 13-14: Graph embeddings and neural-symbolic integration</li>
+                    <li>Ch 15-16: Advanced LLM reasoning and clinical AI</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Your Next Steps:</strong><br>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Build your own neuro-symbolic system using these techniques</li>
+                    <li>Start with a domain you know well (healthcare, finance, law, etc.)</li>
+                    <li>Combine neural perception with symbolic reasoning</li>
+                    <li>Test rigorously on edge cases and red flag scenarios</li>
+                    <li>Make your system auditable and explainable</li>
+                    <li>Deploy with human oversight in high-consequence domains</li>
+                </ul>
+            </div>            <!-- Chapter Quiz -->
+            <div style="background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%); border: 2px solid #1976d2; padding: 25px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="color: #1976d2; font-size: 1.2em; margin-bottom: 10px;">🎯 Ready for Assessment?</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">10 Questions</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">~10 mins</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">70% to Pass</strong></div>
+                    </div>
+                </div>
+                <a href="../Quiz/chapter-19-quiz.html" style="background: #1976d2; color: white; padding: 12px 28px; border-radius: 4px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: 20px; display: inline-block; transition: all 0.3s ease; border: none;">Take Quiz Now →</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>📚 Neuro-Symbolic AI Tutorial | Chapter 19: Clinical AI & Computable Logic</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">Congratulations on completing all 19 chapters! This course was developed using Claude Code. Content is inspired by the Neuro-Symbolic AI course (DATASCI 290) from UC Berkeley's Master of Information and Data Science (MIDS) program, Spring 2026. For questions or feedback, <a href="mailto:kirthi.genai@gmail.com">Email</a> us.</p>
+            <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <a href="chapter-18-graph-of-logic.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">← Graph-of-Logic</a>
+                <a href="../index.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 16px; display: inline-block; border-radius: 4px; transition: all 0.3s ease;">🏠 Home</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 12: Datalog & Logic Programming - Neuro-Symbolic AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #555; background: #ffffff; min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; }
+        header { background: white; color: #333; padding: 40px; border-bottom: 3px solid #1976d2; text-align: center; }
+        .chapter-number { display: inline-block; background: white; color: #1976d2; padding: 5px 12px; border-radius: 0; font-size: 0.85em; margin-bottom: 10px; font-weight: bold; border: 1px solid #1976d2; }
+        header h1 { font-size: 2.5em; margin: 15px 0 10px 0; color: #333; }
+        header p { font-size: 1.1em; color: #999; margin: 10px 0; }
+        .content { padding: 40px; }
+        h2 { color: #333; font-size: 1.8em; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin: 30px 0 15px 0; }
+        h3 { color: #555; font-size: 1.3em; margin: 25px 0 15px 0; }
+        h4 { color: #1976d2; font-size: 1.1em; margin: 20px 0 10px 0; }
+        p { font-size: 1.05em; line-height: 1.8; margin: 15px 0; }
+        .highlight-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .highlight-box strong { color: #1976d2; }
+        .concept-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .concept-box strong { color: #1976d2; }
+        .key-points { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .key-points h4 { color: #ff9800; }
+        .key-points ul { margin-left: 20px; }
+        .key-points li { margin: 10px 0; }
+        .example-box { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .example-box h4 { color: #ff9800; }
+        .code-block { border-left: 4px solid #1976d2; background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; font-family: 'Courier New', monospace; font-size: 0.95em; overflow-x: auto; }
+        .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+        .navigation { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0e0e0; }
+        .nav-button { background: white; color: #1976d2; padding: 10px 20px; text-decoration: none; border: 2px solid #1976d2; border-radius: 0; transition: all 0.3s ease; font-weight: 500; cursor: pointer; }
+        .nav-button:hover { background: #1976d2; color: white; }
+        footer { background: white; padding: 30px; text-align: center; color: #999; border-top: 1px solid #e0e0e0; font-size: 0.9em; }
+        @media (max-width: 768px) { header h1 { font-size: 1.8em; } .content { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="chapter-number">CHAPTER 12</div>
+            <h1>🔤 Datalog & Logic Programming</h1>
+            <p>Declarative Language for Knowledge Representation</p>
+        </header>
+
+        <div class="content">
+            <div class="highlight-box">
+                <strong>Learning Objectives:</strong><br>
+                Learn Datalog, a declarative logic programming language. Write clean logical rules for knowledge representation, perform queries, and understand how Datalog differs from imperative programming.
+            </div>
+
+            <h2>What is Datalog?</h2>
+
+            <p>
+                Datalog is a declarative logic programming language. Instead of writing step-by-step instructions (imperative), you declare facts and rules about relationships, then ask questions. The system figures out how to find answers.
+            </p>
+
+            <div class="concept-box">
+                <strong>Key Difference:</strong><br>
+                <em>Imperative (Python):</em> "Do this, then do that, then check this condition"<br>
+                <em>Declarative (Datalog):</em> "Facts are X. Rules are Y. Question: what is Z?"
+            </div>
+
+            <h2>Datalog Basics: Facts and Rules</h2>
+
+            <div class="example-box">
+                <h4>Simple Family Example</h4>
+
+                <p><strong>Facts (ground facts):</strong></p>
+                <div class="code-block"><pre>
+% Parent relationships (facts)
+parent(john, mary).
+parent(john, bob).
+parent(mary, alice).
+parent(bob, charlie).
+
+% Male/Female (facts)
+male(john).
+male(bob).
+male(charlie).
+female(mary).
+female(alice).
+                </pre></div>
+
+                <p><strong>Rules (inferred relationships):</strong></p>
+                <div class="code-block"><pre>
+% Rule: X is a grandparent of Z if X is parent of Y and Y is parent of Z
+grandparent(X, Z) :- parent(X, Y), parent(Y, Z).
+
+% Rule: X is a child of Y if Y is parent of X
+child(X, Y) :- parent(Y, X).
+
+% Rule: X and Y are siblings if they share a parent
+sibling(X, Y) :- parent(Z, X), parent(Z, Y), X \= Y.
+                </pre></div>
+
+                <p><strong>Queries (asking questions):</strong></p>
+                <div class="code-block"><pre>
+% Query 1: Who is the grandparent of alice?
+?- grandparent(X, alice).
+Answer: X = john
+
+% Query 2: Who are all of john's children?
+?- child(X, john).
+Answer: X = mary; X = bob
+
+% Query 3: Who are the siblings of alice?
+?- sibling(alice, X).
+Answer: X = (no one, alice has no siblings)
+                </pre></div>
+            </div>
+
+            <h2>Medical Knowledge in Datalog</h2>
+
+            <div class="example-box">
+                <h4>Disease Diagnosis Rules</h4>
+
+                <div class="code-block"><pre>
+% Facts: Patient symptoms
+symptom(patient1, fever).
+symptom(patient1, cough).
+symptom(patient1, sore_throat).
+
+% Facts: Disease-symptom mappings
+disease_symptom(cold, fever).
+disease_symptom(cold, cough).
+disease_symptom(cold, sore_throat).
+
+disease_symptom(flu, fever).
+disease_symptom(flu, cough).
+disease_symptom(flu, fatigue).
+
+% Rule: Patient X has disease D if:
+% - X has all symptoms required for disease D
+% - No conflicting symptoms present
+possible_disease(Patient, Disease) :-
+    disease_symptom(Disease, Symptom1),
+    disease_symptom(Disease, Symptom2),
+    disease_symptom(Disease, Symptom3),
+    symptom(Patient, Symptom1),
+    symptom(Patient, Symptom2),
+    symptom(Patient, Symptom3).
+
+% Queries
+?- possible_disease(patient1, X).
+Answer: X = cold
+                </pre></div>
+            </div>
+
+            <h2>Key Datalog Concepts</h2>
+
+            <table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+                <tr style="border-bottom: 2px solid #1976d2;">
+                    <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">Concept</th>
+                    <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">Example</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Fact</strong> - Ground truth</td>
+                    <td style="padding: 15px;"><span class="code">parent(john, mary).</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Rule</strong> - Inference</td>
+                    <td style="padding: 15px;"><span class="code">grandparent(X,Z) :- parent(X,Y), parent(Y,Z).</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Query</strong> - Question</td>
+                    <td style="padding: 15px;"><span class="code">?- grandparent(john, X).</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Variable</strong> - Placeholder</td>
+                    <td style="padding: 15px;"><span class="code">X, Y, Z</span> (uppercase)</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Predicate</strong> - Relationship</td>
+                    <td style="padding: 15px;"><span class="code">parent(X, Y)</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 15px;"><strong>Unification</strong> - Pattern matching</td>
+                    <td style="padding: 15px;">Finding X such that parent(X, mary) is true</td>
+                </tr>
+            </table>
+
+            <h2>Advantages of Datalog</h2>
+
+            <div class="key-points">
+                <h4>Why Use Datalog?</h4>
+                <ul>
+                    <li><strong>Declarative:</strong> Specify WHAT, not HOW. System figures out the steps.</li>
+                    <li><strong>Logical:</strong> Rules follow formal logic. Provably correct.</li>
+                    <li><strong>Composable:</strong> Rules build on each other. Easy to understand relationships.</li>
+                    <li><strong>Auditable:</strong> Every answer traces back to specific facts and rules.</li>
+                    <li><strong>Scalable:</strong> Efficient query engines can optimize large datasets.</li>
+                </ul>
+            </div>
+
+            <h2>Datalog vs Other Languages</h2>
+
+            <div class="example-box">
+                <h4>Same Problem: Find All Grandparents</h4>
+
+                <p><strong>Imperative Python:</strong></p>
+                <div class="code-block"><pre>
+# How to do it (step-by-step)
+grandparents = []
+for parent_id, child_id in parents_list:
+    for parent_id2, child_id2 in parents_list:
+        if child_id == parent_id2:
+            grandparents.append((parent_id, child_id2))
+return grandparents
+                </pre></div>
+
+                <p><strong>Datalog (Logic):</strong></p>
+                <div class="code-block"><pre>
+% What we want (declarative)
+grandparent(X, Z) :- parent(X, Y), parent(Y, Z).
+?- grandparent(X, Z).
+                </pre></div>
+
+                <p><strong>SQL:</strong></p>
+                <div class="code-block"><pre>
+-- SQL is also declarative, but for relational data
+SELECT p1.parent_id, p2.child_id
+FROM parents p1
+JOIN parents p2 ON p1.child_id = p2.parent_id;
+                </pre></div>
+            </div>
+
+            <h2>Running Datalog: Practical Tools</h2>
+
+            <p>
+                Datalog isn't built into Python, but several libraries implement it:
+            </p>
+
+            <div class="code-block"><pre>
+# Python-Datalog: Pure Python implementation
+from pyDatalog import pyDatalog
+
+pyDatalog.clear()
+# Declare predicates
+pyDatalog.create_terms('parent, X, Y, Z, grandparent, child')
+
+# Facts
+parent('john', 'mary') <= True
+parent('john', 'bob') <= True
+parent('mary', 'alice') <= True
+
+# Rules
+(grandparent(X, Z) <= (parent(X, Y) & parent(Y, Z)))
+
+# Query
+print(grandparent(X, 'alice'))
+# Output: ((john,),)
+            </pre></div>
+
+            <h2>When to Use Datalog</h2>
+
+            <p>
+                Datalog is especially useful for:
+            </p>
+
+            <ul style="margin-left: 20px; margin: 15px 0;">
+                <li><strong>Knowledge representation:</strong> Facts and rules about domain</li>
+                <li><strong>Graph traversal:</strong> Multi-hop relationships, reachability</li>
+                <li><strong>Logical inference:</strong> Deriving new facts from old ones</li>
+                <li><strong>Constraint checking:</strong> Ensuring data satisfies logical rules</li>
+                <li><strong>Neuro-symbolic systems:</strong> Symbolic reasoning layer in hybrid AI</li>
+            </ul>
+
+            <div class="key-points">
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li>Datalog is a declarative logic language: state facts and rules, ask questions</li>
+                    <li>Rules use pattern matching and unification to infer new facts</li>
+                    <li>Every answer is traceable back to specific facts and rules (auditable)</li>
+                    <li>Scales well for knowledge graphs and multi-hop reasoning</li>
+                    <li>Perfect for the symbolic reasoning component of neuro-symbolic AI</li>
+                </ul>
+            </div>
+
+            <h2>Further Reading</h2>
+
+            <div class="highlight-box">
+                <strong>Tools & Resources:</strong><br>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>pyDatalog: Pure Python Datalog implementation</li>
+                    <li>DuckDB: Modern SQL with Datalog-like features</li>
+                    <li>SWI-Prolog: Classic logic programming language (superset of Datalog)</li>
+                </ul>
+            </div>            <!-- Chapter Quiz -->
+            <div style="background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%); border: 2px solid #1976d2; padding: 25px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="color: #1976d2; font-size: 1.2em; margin-bottom: 10px;">🎯 Ready for Assessment?</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">10 Questions</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">~10 mins</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">70% to Pass</strong></div>
+                    </div>
+                </div>
+                <a href="../Quiz/chapter-12-quiz.html" style="background: #1976d2; color: white; padding: 12px 28px; border-radius: 4px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: 20px; display: inline-block; transition: all 0.3s ease; border: none;">Take Quiz Now →</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>Neuro-Symbolic AI Tutorial | Chapter 12: Datalog & Logic Programming</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">This course was developed using Claude Code. Content is inspired by the Neuro-Symbolic AI course (DATASCI 290) from UC Berkeley's Master of Information and Data Science (MIDS) program, Spring 2026. For questions or feedback, <a href="mailto:kirthi.genai@gmail.com">Email</a> us.</p>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <a href="chapter-11-reasoning-types.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">← Reasoning</a>
+                <a href="../index.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 16px; display: inline-block; border-radius: 4px; transition: all 0.3s ease;">🏠 Home</a>
+                <a href="chapter-13-graph-embeddings.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">Embeddings →</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

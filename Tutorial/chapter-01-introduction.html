@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: What is Neuro-Symbolic AI?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #555;
+            background: white;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        header {
+            background: white;
+            color: #333;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 3px solid #1976d2;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 1;
+            color: #999;
+        }
+
+        .nav-bar {
+            background: white;
+            padding: 15px 30px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #ff9800;
+            text-decoration: none;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin: 40px 0 20px 0;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #555;
+            font-size: 1.3em;
+            margin: 30px 0 15px 0;
+        }
+
+        p {
+            margin: 15px 0;
+            font-size: 1.05em;
+            line-height: 1.8;
+        }
+
+        .highlight-box {
+            background: white;
+            border-left: 4px solid #1976d2;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0;
+        }
+
+        .highlight-box strong {
+            color: #1976d2;
+        }
+
+        .diagram-box {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid #1976d2;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 0;
+            text-align: center;
+        }
+
+        .diagram-box svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .diagram-label {
+            color: #666;
+            font-size: 0.95em;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .comparison-table th {
+            background: white;
+            color: #1976d2;
+            font-weight: 600;
+            border-bottom: 2px solid #1976d2;
+        }
+
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .key-concept {
+            background: white;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+
+        .key-concept strong {
+            color: #ff9800;
+        }
+
+        .list-section {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 0;
+            margin: 20px 0;
+            border-left: 4px solid #9e9e9e;
+        }
+
+        .list-section ul {
+            list-style-position: inside;
+            margin-left: 20px;
+        }
+
+        .list-section li {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .footer {
+            background: white;
+            padding: 20px 40px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer a {
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 0;
+            font-family: 'Courier New', monospace;
+            color: #1976d2;
+        }
+
+        .example-block {
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .footer {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Chapter 1: What is Neuro-Symbolic AI?</h1>
+            <p>Understanding the Foundation of Intelligent Systems</p>
+        </header>
+
+        <div class="nav-bar">
+            <a href="../index.html" class="nav-link">← Back to Home</a>
+            <span style="color: #999;">Chapter 1 of 19</span>
+            <a href="chapter-02-kg-basics.html" class="nav-link">Next Chapter →</a>
+        </div>
+
+        <div class="content">
+            <h2>Introduction</h2>
+            <p>
+                Imagine you're a doctor examining a patient with chest pain. What do you do? You don't just use
+                intuition (like a neural network might). Instead, you follow a systematic process:
+            </p>
+            <div class="list-section">
+                <ul>
+                    <li>Ask about symptoms (perception)</li>
+                    <li>Check medical rules (is chest pain + shortness of breath dangerous?)</li>
+                    <li>Apply your knowledge (rules, guidelines, past cases)</li>
+                    <li>Make a decision (diagnose or escalate)</li>
+                </ul>
+            </div>
+            <p>
+                This combination of <strong>intuition + logic</strong> is exactly what Neuro-Symbolic AI does.
+                It's the future of AI because it's <strong>intelligent, trustworthy, and explainable</strong>.
+            </p>
+
+            <h2>What Are the Two Parts?</h2>
+
+            <h3>Part 1: Neural Networks (The "Neural" Part)</h3>
+            <p>
+                Neural networks are inspired by the human brain. They're excellent at:
+            </p>
+            <div class="list-section">
+                <ul>
+                    <li>🎯 Recognizing patterns in data</li>
+                    <li>🎯 Understanding natural language (reading text)</li>
+                    <li>🎯 Processing images and sounds</li>
+                    <li>🎯 Making fast, intuitive decisions</li>
+                </ul>
+            </div>
+            <p>
+                <strong>Example:</strong> A neural network can read "I have chest pain and can't breathe" and
+                understand that these are serious symptoms.
+            </p>
+
+            <h3>Part 2: Symbolic AI (The "Symbolic" Part)</h3>
+            <p>
+                Symbolic AI uses explicit rules and logic. It's excellent at:
+            </p>
+            <div class="list-section">
+                <ul>
+                    <li>📋 Representing structured knowledge (rules, relationships)</li>
+                    <li>📋 Enforcing hard constraints (things that MUST happen)</li>
+                    <li>📋 Making provable, transparent decisions</li>
+                    <li>📋 Explaining WHY a decision was made</li>
+                </ul>
+            </div>
+            <p>
+                <strong>Example:</strong> A symbolic system knows the rule: "If chest pain AND shortness of breath
+                → escalate to emergency."
+            </p>
+
+            <h2>Neuro-Symbolic AI = Best of Both Worlds</h2>
+
+            <div class="diagram-box">
+                <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Neural Network Box -->
+                    <rect x="20" y="50" width="220" height="200" fill="#e7f3ff" stroke="#667eea" stroke-width="2" rx="10"/>
+                    <text x="130" y="90" font-size="20" font-weight="bold" text-anchor="middle" fill="#667eea">🧠 Neural</text>
+                    <text x="130" y="120" font-size="14" text-anchor="middle" fill="#333">Perception</text>
+                    <text x="130" y="145" font-size="14" text-anchor="middle" fill="#333">Pattern Recognition</text>
+                    <text x="130" y="170" font-size="14" text-anchor="middle" fill="#333">Natural Language</text>
+                    <text x="130" y="195" font-size="12" text-anchor="middle" fill="#666" font-style="italic">Fast & Intuitive</text>
+                    <text x="130" y="218" font-size="12" text-anchor="middle" fill="#666" font-style="italic">But Not Transparent</text>
+
+                    <!-- Plus Sign -->
+                    <text x="300" y="160" font-size="40" font-weight="bold" text-anchor="middle" fill="#667eea">+</text>
+
+                    <!-- Symbolic Box -->
+                    <rect x="360" y="50" width="220" height="200" fill="#fff3cd" stroke="#ffc107" stroke-width="2" rx="10"/>
+                    <text x="470" y="90" font-size="20" font-weight="bold" text-anchor="middle" fill="#ff6b6b">⚙️ Symbolic</text>
+                    <text x="470" y="120" font-size="14" text-anchor="middle" fill="#333">Reasoning</text>
+                    <text x="470" y="145" font-size="14" text-anchor="middle" fill="#333">Logic & Rules</text>
+                    <text x="470" y="170" font-size="14" text-anchor="middle" fill="#333">Constraints</text>
+                    <text x="470" y="195" font-size="12" text-anchor="middle" fill="#666" font-style="italic">Transparent & Provable</text>
+                    <text x="470" y="218" font-size="12" text-anchor="middle" fill="#666" font-style="italic">But Rigid</text>
+                </svg>
+                <div class="diagram-label">🎯 Combining neural perception with symbolic reasoning creates intelligent, trustworthy systems</div>
+            </div>
+
+            <h2>Why Does This Matter?</h2>
+
+            <p>
+                In healthcare, finance, law, and other high-stakes domains, <strong>being intelligent isn't enough</strong>—you also need to be trustworthy, explainable, and safe. Here's why traditional AI falls short:
+            </p>
+
+            <p>
+                <strong>Pure Neural Networks (LLMs):</strong> Extremely good at understanding context and generating natural responses, but they're <em>black boxes</em>. They can hallucinate, make unpredictable mistakes, and can't enforce critical rules (like "never approve a loan without checking credit scores").
+            </p>
+
+            <p>
+                <strong>Pure Symbolic Systems (Rules):</strong> Guaranteed to follow rules and easy to explain ("Rule X fired"), but they're rigid, can't understand nuance, and fail on novel situations they weren't programmed for.
+            </p>
+
+            <p>
+                <strong>Neuro-Symbolic AI:</strong> Combines both—neural networks provide intelligence and flexibility, symbolic rules provide safety and guarantees.
+            </p>
+
+            <h2>A Real-World Example</h2>
+
+            <div class="highlight-box">
+                <strong>Scenario:</strong> A patient texts a healthcare chatbot: "I have chest pain and shortness of breath"
+            </div>
+
+            <div class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Approach</th>
+                        <th>Response</th>
+                        <th>Problem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Pure Neural (LLM)</strong></td>
+                        <td>"That sounds concerning. Many people experience chest discomfort from anxiety. I'd recommend monitoring your symptoms and visiting a doctor if they persist."</td>
+                        <td>❌ <strong>Patient Harm:</strong> No escalation. Patient delays 911 call. Potentially fatal.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pure Symbolic (Rules)</strong></td>
+                        <td>"ESCALATE TO EMERGENCY: Rule fired - chest_pain AND shortness_of_breath"</td>
+                        <td>❌ <strong>Not Human-Friendly:</strong> Robotic. No explanation. Can't adapt to edge cases.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Neuro-Symbolic</strong></td>
+                        <td>"You're describing emergency symptoms. Please call 911 immediately. We detected chest pain + shortness of breath, both of which require immediate medical evaluation."</td>
+                        <td>✅ <strong>Both Safe & Smart:</strong> Rule enforced (escalation), but explained naturally. Patient gets immediate help.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Key Takeaways</h2>
+
+            <div class="key-concept">
+                <strong>⚖️ Two Systems Work Better Than One</strong><br>
+                Intelligence + Safety = Neuro-Symbolic. Neither neural networks alone nor rules alone can handle high-stakes decisions.
+            </div>
+
+            <div class="key-concept">
+                <strong>🔒 Enforce Guardrails with Symbolic Logic</strong><br>
+                Critical constraints (must escalate emergency, must not approve fraud, must follow regulations) are enforced by rules, not learned by neural networks.
+            </div>
+
+            <div class="key-concept">
+                <strong>🗣️ Maintain Human Trust</strong><br>
+                "Here's the decision and here's why" beats "trust the AI" or "rule XYZ fired." Humans need to understand AND agree with the system's reasoning.
+            </div>
+
+            <div class="key-concept">
+                <strong>🎯 When It Matters Most</strong><br>
+                Neuro-symbolic AI is essential in domains where mistakes have real consequences: healthcare, legal, finance, safety-critical systems.
+            </div>
+
+            <h2>Where Is Neuro-Symbolic AI Used Today?</h2>
+
+            <p>Neuro-symbolic AI is transforming critical industries:</p>
+            <div class="list-section">
+                <ul>
+                    <li>🏥 <strong>Healthcare:</strong> Diagnosis support, treatment planning, drug recommendations</li>
+                    <li>⚖️ <strong>Legal:</strong> Contract analysis, case law reasoning, compliance checking</li>
+                    <li>💼 <strong>Insurance:</strong> Fraud detection, risk assessment, claim processing</li>
+                    <li>💊 <strong>Pharmacy:</strong> Drug discovery, pharmacogenomics, adverse effect prediction</li>
+                    <li>🏦 <strong>Finance:</strong> Risk management, regulatory compliance, fraud detection</li>
+                </ul>
+            </div>
+
+            <h2>What's Next?</h2>
+
+            <p>
+                In the next chapter, you'll learn about <strong>Knowledge Graphs</strong>—the fundamental data structure
+                that makes symbolic reasoning possible. Knowledge graphs are how we represent and organize information
+                so that both neural and symbolic systems can reason about it.
+            </p>
+
+            <div class="highlight-box">
+                <strong>Key Takeaway:</strong> Neuro-symbolic AI is the future because it combines the
+                intelligence of neural networks with the safety and transparency of symbolic reasoning.
+                This is especially critical in domains where mistakes have consequences (healthcare, legal, finance).
+            </div>
+
+            <h2>Summary</h2>
+            <div class="list-section">
+                <ul>
+                    <li>✅ Neural AI is good at perception and pattern recognition</li>
+                    <li>✅ Symbolic AI is good at reasoning and enforcing rules</li>
+                    <li>✅ Neuro-Symbolic AI combines both for intelligent, safe, explainable systems</li>
+                    <li>✅ Critical for domains where mistakes have real consequences</li>
+                    <li>✅ Enables human-in-the-loop AI that people can trust</li>
+                </ul>
+            </div>
+        </div>        <!-- Chapter Quiz -->
+        <div style="background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%); border: 2px solid #1976d2; padding: 25px; margin-bottom: 20px; margin-top: 50px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <h3 style="color: #1976d2; font-size: 1.2em; margin-bottom: 10px;">🎯 Ready for Assessment?</h3>
+                <div style="display: flex; gap: 20px;">
+                    <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">10 Questions</strong></div>
+                    <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">~10 mins</strong></div>
+                    <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">70% to Pass</strong></div>
+                </div>
+            </div>
+            <a href="../Quiz/chapter-01-quiz.html" style="background: #1976d2; color: white; padding: 12px 28px; border-radius: 4px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: 20px; display: inline-block; transition: all 0.3s ease; border: none;">Take Quiz Now →</a>
+        </div>
+
+
+
+        <footer>
+            <p>📚 Neuro-Symbolic AI Tutorial | Chapter 1: What is Neuro-Symbolic AI?</p>
+            <p>This course was developed using Claude Code. Content is inspired by the Neuro-Symbolic AI course (DATASCI 290) from UC Berkeley's Master of Information and Data Science (MIDS) program, Spring 2026. For questions or feedback, <a href="mailto:kirthi.genai@gmail.com">Email</a> us.</p>
+            <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <a href="../index.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 16px; display: inline-block; border-radius: 4px; transition: all 0.3s ease;">🏠 Home</a>
+                <a href="chapter-02-kg-basics.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">Knowledge Graphs Basics →</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

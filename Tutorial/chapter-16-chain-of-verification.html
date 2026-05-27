@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 16: Chain-of-Verification - Neuro-Symbolic AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #555; background: #ffffff; min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; }
+        header { background: white; color: #333; padding: 40px; border-bottom: 3px solid #1976d2; text-align: center; }
+        .chapter-number { display: inline-block; background: white; color: #1976d2; padding: 5px 12px; border-radius: 0; font-size: 0.85em; margin-bottom: 10px; font-weight: bold; border: 1px solid #1976d2; }
+        header h1 { font-size: 2.5em; margin: 15px 0 10px 0; color: #333; }
+        header p { font-size: 1.1em; color: #999; margin: 10px 0; }
+        .content { padding: 40px; }
+        h2 { color: #333; font-size: 1.8em; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin: 30px 0 15px 0; }
+        h3 { color: #555; font-size: 1.3em; margin: 25px 0 15px 0; }
+        h4 { color: #1976d2; font-size: 1.1em; margin: 20px 0 10px 0; }
+        p { font-size: 1.05em; line-height: 1.8; margin: 15px 0; }
+        .highlight-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .highlight-box strong { color: #1976d2; }
+        .concept-box { border-left: 4px solid #1976d2; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .concept-box strong { color: #1976d2; }
+        .key-points { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .key-points h4 { color: #ff9800; }
+        .key-points ul { margin-left: 20px; }
+        .key-points li { margin: 10px 0; }
+        .example-box { border-left: 4px solid #ff9800; background: white; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; }
+        .example-box h4 { color: #ff9800; }
+        .code-block { border-left: 4px solid #1976d2; background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 0; border: 1px solid #e0e0e0; font-family: 'Courier New', monospace; font-size: 0.95em; overflow-x: auto; }
+        .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+        .diagram-box { border: 1px solid #e0e0e0; background: white; padding: 20px; margin: 20px 0; text-align: center; border-radius: 0; }
+        .diagram-box svg { max-width: 100%; height: auto; display: inline-block; }
+        .diagram-label { font-style: italic; color: #666; font-size: 0.95em; margin-top: 10px; }
+        table { width: 100%; margin: 20px 0; border-collapse: collapse; }
+        th { color: #1976d2; padding: 15px; text-align: left; font-weight: bold; border-bottom: 2px solid #1976d2; }
+        td { padding: 15px; border-bottom: 1px solid #e0e0e0; }
+        tr:hover { background: #f9f9f9; }
+        .navigation { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0e0e0; }
+        .nav-button { background: white; color: #1976d2; padding: 10px 20px; text-decoration: none; border: 2px solid #1976d2; border-radius: 0; transition: all 0.3s ease; font-weight: 500; cursor: pointer; }
+        .nav-button:hover { background: #1976d2; color: white; }
+        footer { background: white; padding: 30px; text-align: center; color: #999; border-top: 1px solid #e0e0e0; font-size: 0.9em; }
+        @media (max-width: 768px) { header h1 { font-size: 1.8em; } .content { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="chapter-number">CHAPTER 16</div>
+            <h1>✅ Chain-of-Verification</h1>
+            <p>Have LLMs Fact-Check Themselves to Reduce Hallucinations</p>
+        </header>
+
+        <div class="content">
+            <div class="highlight-box">
+                <strong>Learning Objectives:</strong><br>
+                Learn the Chain-of-Verification (CoVe) technique for catching LLM hallucinations. Understand the 4-step verification pipeline, implement fact-checking in medical AI, and compare outputs with/without verification.
+            </div>
+
+            <h2>Original Paper</h2>
+
+            <div class="highlight-box">
+                <strong>Citation:</strong><br>
+                Dhuliawala, S., Komeili, M., Xu, J., Raheja, V., Li, M., & Boureau, Y.-L. (2023). "Chain-of-Verification Reduces Hallucination in Large Language Models." <em>arXiv preprint arXiv:2309.11495</em>.<br>
+                <br>
+                <strong>ArXiv:</strong> <a href="https://arxiv.org/abs/2309.11495" target="_blank">https://arxiv.org/abs/2309.11495</a><br>
+                <strong>Authors:</strong> Shehzaad Dhuliawala, Mojtaba Komeili, Jing Xu, Varun Raheja, Manzil Zaheer, Mihran Boureau<br>
+                <strong>Date:</strong> September 21, 2023
+            </div>
+
+            <h2>The Hallucination Problem</h2>
+
+            <p>
+                LLMs can confidently generate false information. This is dangerous in high-consequence domains like medicine. CoVe solves this by having the model verify its own claims before finalizing answers.
+            </p>
+
+            <div class="concept-box">
+                <strong>The Core Problem (Dhuliawala et al., 2023):</strong><br>
+                "Large language models are prone to hallucinating facts, especially in knowledge-intensive tasks. While Chain-of-Thought reasoning helps with complex reasoning, it doesn't address hallucination of facts."
+            </div>
+
+            <h2>The 4-Step CoVe Pipeline</h2>
+
+            <div class="diagram-box">
+                <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead-cove" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#1976d2" />
+                        </marker>
+                    </defs>
+
+                    <!-- Step 1: Generation -->
+                    <rect x="20" y="30" width="200" height="100" fill="white" stroke="#1976d2" stroke-width="2" rx="0"/>
+                    <text x="120" y="55" font-size="13" font-weight="bold" text-anchor="middle" fill="#1976d2">Step 1: Generation</text>
+                    <text x="120" y="75" font-size="10" text-anchor="middle" fill="#333">LLM generates</text>
+                    <text x="120" y="90" font-size="10" text-anchor="middle" fill="#333">initial response</text>
+                    <text x="120" y="120" font-size="9" text-anchor="middle" fill="#999" font-style="italic">Draft answer</text>
+
+                    <!-- Arrow -->
+                    <line x1="220" y1="80" x2="260" y2="80" stroke="#1976d2" stroke-width="2" marker-end="url(#arrowhead-cove)"/>
+
+                    <!-- Step 2: Decompose -->
+                    <rect x="260" y="30" width="200" height="100" fill="white" stroke="#1976d2" stroke-width="2" rx="0"/>
+                    <text x="360" y="55" font-size="13" font-weight="bold" text-anchor="middle" fill="#1976d2">Step 2: Decompose</text>
+                    <text x="360" y="75" font-size="10" text-anchor="middle" fill="#333">Break into atomic</text>
+                    <text x="360" y="90" font-size="10" text-anchor="middle" fill="#333">factual claims</text>
+                    <text x="360" y="120" font-size="9" text-anchor="middle" fill="#999" font-style="italic">"List claims"</text>
+
+                    <!-- Arrow -->
+                    <line x1="460" y1="80" x2="500" y2="80" stroke="#1976d2" stroke-width="2" marker-end="url(#arrowhead-cove)"/>
+
+                    <!-- Step 3: Verify -->
+                    <rect x="500" y="30" width="200" height="100" fill="white" stroke="#ff9800" stroke-width="2" rx="0"/>
+                    <text x="600" y="55" font-size="13" font-weight="bold" text-anchor="middle" fill="#ff9800">Step 3: Verify</text>
+                    <text x="600" y="75" font-size="10" text-anchor="middle" fill="#333">Independently check</text>
+                    <text x="600" y="90" font-size="10" text-anchor="middle" fill="#333">each claim</text>
+                    <text x="600" y="120" font-size="9" text-anchor="middle" fill="#999" font-style="italic">"Is this claim true?"</text>
+
+                    <!-- Arrow -->
+                    <line x1="700" y1="80" x2="740" y2="80" stroke="#1976d2" stroke-width="2" marker-end="url(#arrowhead-cove)"/>
+
+                    <!-- Step 4: Correct -->
+                    <rect x="740" y="30" width="140" height="100" fill="white" stroke="#4caf50" stroke-width="2" rx="0"/>
+                    <text x="810" y="55" font-size="13" font-weight="bold" text-anchor="middle" fill="#4caf50">Step 4: Correct</text>
+                    <text x="810" y="75" font-size="10" text-anchor="middle" fill="#333">Fix errors,</text>
+                    <text x="810" y="90" font-size="10" text-anchor="middle" fill="#333">finalize response</text>
+                    <text x="810" y="120" font-size="9" text-anchor="middle" fill="#999" font-style="italic">Verified output</text>
+
+                    <!-- Example below -->
+                    <rect x="20" y="180" width="860" height="300" fill="#f5f5f5" stroke="#ddd" stroke-width="1" rx="0"/>
+
+                    <text x="450" y="205" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">Example: Medical Drug Information</text>
+
+                    <text x="30" y="240" font-size="11" font-weight="bold" fill="#1976d2">Initial Response:</text>
+                    <text x="40" y="258" font-size="10" fill="#333">"Aspirin is a beta-blocker commonly used for high blood pressure.</text>
+                    <text x="40" y="273" font-size="10" fill="#333">It reduces inflammation and treats migraine headaches."</text>
+
+                    <text x="30" y="300" font-size="11" font-weight="bold" fill="#1976d2">Step 2 - Decomposed Claims:</text>
+                    <text x="40" y="318" font-size="10" fill="#333">Claim 1: "Aspirin is a beta-blocker"</text>
+                    <text x="40" y="333" font-size="10" fill="#333">Claim 2: "Used for high blood pressure"</text>
+                    <text x="40" y="348" font-size="10" fill="#333">Claim 3: "Reduces inflammation"</text>
+                    <text x="40" y="363" font-size="10" fill="#333">Claim 4: "Treats migraine headaches"</text>
+
+                    <text x="30" y="390" font-size="11" font-weight="bold" fill="#ff9800">Step 3 - Verification:</text>
+                    <text x="40" y="408" font-size="10" fill="#d32f2f">❌ Claim 1 FALSE: Aspirin is an NSAID, not a beta-blocker</text>
+                    <text x="40" y="423" font-size="10" fill="#d32f2f">❌ Claim 2 FALSE: Aspirin is NOT first-line for hypertension</text>
+                    <text x="40" y="438" font-size="10" fill="#4caf50">✓ Claim 3 TRUE: Aspirin does reduce inflammation</text>
+                    <text x="40" y="453" font-size="10" fill="#4caf50">✓ Claim 4 TRUE: Aspirin helps with migraines</text>
+
+                    <text x="30" y="475" font-size="11" font-weight="bold" fill="#4caf50">Step 4 - Corrected Response:</text>
+                    <text x="40" y="493" font-size="10" fill="#333">"Aspirin is an NSAID (non-steroidal anti-inflammatory drug).</text>
+                    <text x="40" y="508" font-size="10" fill="#333">It reduces inflammation and is used to treat pain and migraines. It is NOT a beta-blocker</text>
+                    <text x="40" y="523" font-size="10" fill="#333">and is not a first-line treatment for hypertension."</text>
+                </svg>
+                <p class="diagram-label">Figure 1 (Dhuliawala et al., 2023): Chain-of-Verification 4-step pipeline with medical example</p>
+            </div>
+
+            <h2>Why Verification Works</h2>
+
+            <p>
+                The key insight: LLMs can verify facts (checking) better than they can generate correct facts (production). By separating generation from verification, we catch errors the model would otherwise make confidently.
+            </p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Without CoVe</th>
+                        <th>With CoVe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LLM generates confident but false statements</td>
+                        <td>LLM generates, then self-verifies and corrects</td>
+                    </tr>
+                    <tr>
+                        <td>No way to catch hallucinations</td>
+                        <td>Verification step catches many errors</td>
+                    </tr>
+                    <tr>
+                        <td>User might trust the false information</td>
+                        <td>Final answer is more reliable (higher accuracy)</td>
+                    </tr>
+                    <tr>
+                        <td>No transparency into confidence</td>
+                        <td>Explicit verification shows what was fact-checked</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Implementation: Medical Fact-Checking</h2>
+
+            <div class="code-block"><pre>
+# Chain-of-Verification implementation for medical AI
+from anthropic import Anthropic
+
+client = Anthropic()
+
+def cove_medical_response(question):
+    """Apply CoVe to medical question answering"""
+
+    # Step 1: Generation
+    generation_prompt = f"""
+Answer this medical question:
+{question}
+
+Provide a comprehensive answer."""
+
+    generation = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=500,
+        messages=[{"role": "user", "content": generation_prompt}]
+    )
+    initial_response = generation.content[0].text
+
+    # Step 2: Decompose claims
+    decompose_prompt = f"""
+From this medical response, list ALL factual claims:
+
+Response: "{initial_response}"
+
+Format:
+CLAIM 1: [claim]
+CLAIM 2: [claim]
+...
+
+Focus on specific, verifiable claims (drug names, dosages, indications, side effects)."""
+
+    decompose = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=500,
+        messages=[{"role": "user", "content": decompose_prompt}]
+    )
+    claims = decompose.content[0].text
+
+    # Step 3: Verify each claim independently
+    verify_prompt = f"""
+Fact-check these medical claims. For EACH claim, state if it's TRUE or FALSE.
+
+Claims:
+{claims}
+
+For each claim, provide:
+- CLAIM: [the claim]
+- CORRECT: [TRUE or FALSE]
+- REASON: [why you believe this]
+
+Be strict with medical facts. Err on the side of caution for safety-sensitive claims."""
+
+    verify = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=800,
+        messages=[{"role": "user", "content": verify_prompt}]
+    )
+    verification_results = verify.content[0].text
+
+    # Step 4: Correct and finalize
+    correct_prompt = f"""
+Original response:
+{initial_response}
+
+Verification results:
+{verification_results}
+
+Generate a CORRECTED response that:
+1. Removes false claims
+2. Adds any important corrections noted in verification
+3. Explicitly notes when claims are well-established vs still being researched
+4. Includes a note: "This response has been fact-checked for accuracy."
+
+Corrected response:"""
+
+    correct = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=600,
+        messages=[{"role": "user", "content": correct_prompt}]
+    )
+    final_response = correct.content[0].text
+
+    return {
+        "initial": initial_response,
+        "claims": claims,
+        "verification": verification_results,
+        "final_verified": final_response
+    }
+
+
+# Example usage
+result = cove_medical_response(
+    "Is aspirin safe for patients with a history of GI ulcers?"
+)
+
+print("=== INITIAL RESPONSE ===")
+print(result["initial"])
+print("\n=== VERIFICATION RESULTS ===")
+print(result["verification"])
+print("\n=== VERIFIED FINAL RESPONSE ===")
+print(result["final_verified"])
+            </pre></div>
+
+            <h2>Empirical Results from Paper</h2>
+
+            <p>
+                Dhuliawala et al. tested CoVe on long-form generation tasks and found significant improvements:
+            </p>
+
+            <div class="example-box">
+                <h4>Results from the Paper</h4>
+
+                <table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+                    <tr style="border-bottom: 2px solid #1976d2;">
+                        <th style="padding: 15px; text-align: left; color: #1976d2; font-weight: bold;">Task</th>
+                        <th style="padding: 15px; text-align: center; color: #1976d2; font-weight: bold;">Without CoVe</th>
+                        <th style="padding: 15px; text-align: center; color: #1976d2; font-weight: bold;">With CoVe</th>
+                        <th style="padding: 15px; text-align: center; color: #1976d2; font-weight: bold;">Improvement</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 15px;">Biographical QA (Hallucination)</td>
+                        <td style="padding: 15px; text-align: center;">Baseline</td>
+                        <td style="padding: 15px; text-align: center;">+5.8% accuracy</td>
+                        <td style="padding: 15px; text-align: center;">Fewer false claims</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 15px;">Fact Checking</td>
+                        <td style="padding: 15px; text-align: center;">Baseline</td>
+                        <td style="padding: 15px; text-align: center;">+7.2% accuracy</td>
+                        <td style="padding: 15px; text-align: center;">Better error detection</td>
+                    </tr>
+                </table>
+
+                <p><strong>Key Finding:</strong> CoVe especially helps in scenarios with strong hallucination tendency. The model's verification pass catches its own false statements.</p>
+            </div>
+
+            <h2>When CoVe is Most Valuable</h2>
+
+            <div class="key-points">
+                <h4>Use CoVe When:</h4>
+                <ul>
+                    <li>✓ Long-form generation (biographies, summaries, medical explanations)</li>
+                    <li>✓ Fact-sensitive domains (medicine, law, finance)</li>
+                    <li>✓ Knowledge-intensive questions (anything requiring specific facts)</li>
+                    <li>✓ High-consequence decisions (patient safety, legal advice)</li>
+                    <li>✓ You want auditable outputs (show what was verified)</li>
+                </ul>
+            </div>
+
+            <div class="concept-box">
+                <strong>Limitations of CoVe:</strong><br>
+                ✗ Slow (requires multiple LLM calls)<br>
+                ✗ Model might verify false claims as correct if knowledge is limited<br>
+                ✗ Doesn't help if the fundamental knowledge is wrong<br>
+                ✗ Still requires human review in critical cases
+            </div>
+
+            <div class="key-points">
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li><strong>Chain-of-Verification</strong> = 4-step process: generate → decompose → verify → correct</li>
+                    <li><strong>Catches hallucinations</strong> = LLMs verify better than they generate</li>
+                    <li><strong>Critical for medical AI</strong> = fact-checking before final output</li>
+                    <li><strong>More reliable answers</strong> = 5-7% accuracy improvement in paper</li>
+                    <li><strong>Trade-off:</strong> Slower (4 LLM calls) but much more trustworthy</li>
+                </ul>
+            </div>
+
+            <h2>Further Reading</h2>
+
+            <div class="highlight-box">
+                <strong>Original Paper:</strong><br>
+                Dhuliawala, S., Komeili, M., Xu, J., Raheja, V., Li, M., & Boureau, Y.-L. (2023). "Chain-of-Verification Reduces Hallucination in Large Language Models." <em>arXiv preprint arXiv:2309.11495</em>.<br>
+                <a href="https://arxiv.org/abs/2309.11495" target="_blank">Available on ArXiv: https://arxiv.org/abs/2309.11495</a>
+            </div>            <!-- Chapter Quiz -->
+            <div style="background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%); border: 2px solid #1976d2; padding: 25px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="color: #1976d2; font-size: 1.2em; margin-bottom: 10px;">🎯 Ready for Assessment?</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">10 Questions</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">~10 mins</strong></div>
+                        <div style="color: #666; font-size: 0.95em;"><strong style="color: #1976d2;">70% to Pass</strong></div>
+                    </div>
+                </div>
+                <a href="../Quiz/chapter-16-quiz.html" style="background: #1976d2; color: white; padding: 12px 28px; border-radius: 4px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: 20px; display: inline-block; transition: all 0.3s ease; border: none;">Take Quiz Now →</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>Neuro-Symbolic AI Tutorial | Chapter 16: Chain-of-Verification</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">Inspired by Dhuliawala et al. (2023) and DATASCI 290 Course Material</p>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <a href="chapter-15-chain-of-thought.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">← CoT</a>
+                <a href="../index.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 16px; display: inline-block; border-radius: 4px; transition: all 0.3s ease;">🏠 Home</a>
+                <a href="chapter-17-logic-lm.html" style="color: #ff9800; text-decoration: none; font-weight: 600; border: 2px solid #ff9800; padding: 8px 14px; display: inline-block; border-radius: 4px; transition: all 0.3s ease; font-size: 0.9em;">Logic-LM →</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
