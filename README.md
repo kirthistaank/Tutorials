@@ -160,8 +160,7 @@ Feel free to reach out. Your feedback helps improve this resource for everyone!
 
 This tutorial series would not have been possible without:
 
-- **UC Berkeley** - For providing the world-class DATASCI 290: Neuro-Symbolic AI course, which inspired this material
-- **Professor Naveen Ashish** - For his exceptional teaching, guidance, and deep expertise in Neuro-Symbolic AI that shaped the content and structure of these tutorials
+- **UC Berkeley** - For providing DATASCI 290: Neuro-Symbolic AI course, which inspired this material
 - **Claude Code (Anthropic)** - For enabling the creation of this comprehensive, AI-generated educational material
 - **The MIDS Community** - For fostering an environment of innovation and learning
 
